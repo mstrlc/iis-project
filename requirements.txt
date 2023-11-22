@@ -1,0 +1,16 @@
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
+SQLAlchemy-Utils
+Flask-WTF
+WTForms
+requests
+jinja2
+werkzeug
+Flask-Login
+email_validator
+cryptography
+pymysql
+Flask-Migrate
+python-dotenv
+gunicorn
