@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    Login
+{% endblock %}
+
 {% block content %}
-    <h1>{% block title %} Transport {% endblock %}</h1>
-    <p>Information system for the public transport authority</p>
+    login form html
+    # <form action="{{ url_for('auth.login') }}" method="post">
+    #     <label for="username">Username</label>
+    #     <input type="text" name="username" id="username">
+    #     <label for="password">Password</label>
+    #     <input type="password" name="password" id="password">
+    #     <input type="submit" value="Login">
+    # </form>
 {% endblock %}
