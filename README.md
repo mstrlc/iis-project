@@ -7,7 +7,7 @@ FIT VUT — IIS — information system for a public transport company
 ```
 cp .env.example .myenv
 ```
-- replace `DATABASE_URI` with your connection string
+- replace `DATABASE_URI` with your connection string in `.myenv`
 ```
 DATABASE_URI=mysql+pymysql://root:<your_password>@localhost/transport
 ```
