@@ -9,14 +9,14 @@
 <body>
     <nav>
         <a href="{{ url_for('home.index') }}">Home</a>
-        <a href="{{ url_for('authentication.register') }}">Register</a>
-        <a href="{{ url_for('authentication.login') }}">Login</a>
-        <a href="{{ url_for('api.authentication_api.logout') }}">Logout</a>
         {% if current_user.is_authenticated %}
             <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </p>
+            <button id="logout" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
         {% else %}
             <p>Not logged in</p>
-        {% endif %}
+            <a href="{{ url_for('authentication.login') }}" class="btn btn-primary">Login</a>
+            <a href="{{ url_for('authentication.register') }}" class="btn btn-primary">Register</a>
+            {% endif %}
     </nav>
     <hr>
     <div class="content">
@@ -25,4 +25,25 @@
 </body>
 </html>
 
-{% block js %} {% endblock %}
+{% block js %}
+    <script>
+        const logout = document.getElementById("logout")
+        logout.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const response = await fetch("{{ url_for('api.authentication_api.logout') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: {}
+            });
+            if(response.ok) {
+                const json = await response.json();
+                window.location.href = "{{ url_for('home.index') }}";
+            } else {
+                const json = await response.json();
+                alert(json.message);
+            }
+        });
+    </script>
+{% endblock %}
