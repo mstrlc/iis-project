@@ -17,7 +17,7 @@ from sqlalchemy import (
 from transport.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-line_stops = Table('LineStop',
+line_stops = db.Table('LineStop',
                     Column('line_id', Integer, ForeignKey('lines.id'), primary_key = True),
                     Column('stop_id', Integer, ForeignKey('stops.id'), primary_key = True),
                     Column('time_from_start', DateTime, nullable=False),
@@ -101,4 +101,4 @@ class Maintenance(db.model):
     __tablename__='maintenance'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
-    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=True)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
