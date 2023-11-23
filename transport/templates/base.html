@@ -8,7 +8,9 @@
 </head>
 <body>
     <nav>
-        <a href="{{ url_for("home.index") }}">Home</a>
+        <a href="{{ url_for('home.index') }}">Home</a>
+        <a href="{{ url_for('authentication.register') }}">Register</a>
+        <a href="{{ url_for('authentication.login') }}">Login</a>
     </nav>
     <hr>
     <div class="content">

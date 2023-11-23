@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template
 from flask_wtf import FlaskForm
+from transport.models import User
 from wtforms import StringField, PasswordField
 from wtforms.validators import Email, DataRequired
 
@@ -24,6 +25,13 @@ def register():
     register_form = RegisterForm()
     if request.method == "POST":
         if register_form.validate():
+            #add user to database
+            user = User( 
+                email=register_form.email.data,
+                firstname=register_form.firstname.data,
+                lastname=register_form.lastname.data,
+                password=register_form.password.data
+            )
             response_object = {
                 "status": "success"
             }
@@ -33,12 +41,13 @@ def register():
     return render_template("register.html", form=register_form)
 
 class LoginForm(FlaskForm):
-    email = StringField("Email Address", [Email(), DataRequired()])
-    password = PasswordField("Password", DataRequired())
+    email = StringField("Email Address", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
 
 
 class RegisterForm(FlaskForm):
-    firstname = StringField("First Name", [DataRequired()])
-    lastname = StringField("Last Name", [DataRequired()])
-    email = StringField("Email", [Email(), DataRequired()])
-    password = PasswordField("Password", DataRequired())
+    firstname = StringField("First Name", validators=[DataRequired()])
+    lastname = StringField("Last Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+
