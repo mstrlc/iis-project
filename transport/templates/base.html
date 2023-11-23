@@ -10,8 +10,9 @@
 <body>
     <nav>
         <a href="{{ url_for('home.index') }}">Home</a>
+        <a href="{{ url_for('administration.users') }}">Administration</a>
         {% if current_user.is_authenticated %}
-            <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </p>
+            <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} – {{ current_user.email }} </p>
             <button id="logout" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
         {% else %}
             <p>Not logged in</p>
@@ -21,12 +22,15 @@
     </nav>
     <hr>
     <div class="content">
-        {% block content %} {% endblock %}
+        <div class="container">
+            <h1> {{ self.title() }} </h1>
+            {% block content %} {% endblock %}
+        </div>
     </div>
 </body>
 </html>
 
-{% block js %}
+{% block logout %}
     <script>
         const logout = document.getElementById("logout")
         logout.addEventListener("click", async (e) => {
@@ -48,3 +52,5 @@
         });
     </script>
 {% endblock %}
+
+{% block js %} {% endblock %}

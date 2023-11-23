@@ -5,6 +5,7 @@ from flask import Flask, render_template, current_app, Blueprint
 from transport.extensions import db, login_manager
 from transport.views.home import home_bp
 from transport.views.authentication import authentication_bp
+from transport.views.administration import administration_bp
 from transport.views.api.authentication import authentication_api_bp
 from dotenv import load_dotenv
 from transport.models import User
@@ -30,6 +31,7 @@ def create_app():
 
     app.register_blueprint(home_bp)
     app.register_blueprint(authentication_bp)
+    app.register_blueprint(administration_bp)
 
     api_bp = Blueprint("api", __name__, url_prefix="/api")
     api_bp.register_blueprint(authentication_api_bp)
