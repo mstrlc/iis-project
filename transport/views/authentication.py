@@ -32,10 +32,11 @@ def register():
                 lastname=register_form.lastname.data,
                 password=register_form.password.data
             )
-            response_object = {
-                "status": "success"
-            }
-            return jsonify(response_object), 200
+            user.save()
+
+            userfromdb = User.query.filter_by(email=register_form.email.data).first()
+        
+            return jsonify(userfromdb), 200
         else:
             return jsonify(register_form.errors), 400
     return render_template("register.html", form=register_form)

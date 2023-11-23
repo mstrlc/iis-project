@@ -12,11 +12,15 @@ def create_app():
     load_dotenv()
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
 
-    SECRET_KEY = os.urandom(32)
-    app.config['SECRET_KEY'] = SECRET_KEY
+    app.config.from_mapping(
+    SECRET_KEY=os.environ.get('SECRET_KEY', default='dev'),
+    )
     csrf.init_app(app)
-
+    
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        
     
     app.register_blueprint(home_bp)
     app.register_blueprint(authentication_bp)
