@@ -1,3 +1,4 @@
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import (
@@ -32,9 +33,26 @@ class User(db.Model):
     def password(self, password):
         self._password = generate_password_hash(password)
 
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_authenticated(self):
+        return self.is_active
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
     def verify_password(self, password):
         return check_password_hash(self._password, password)
 
     def save(self):
+        db.session.expunge_all()
         db.session.add(self)
         db.session.commit()
+        db.session.expunge_all()

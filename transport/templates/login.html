@@ -6,12 +6,66 @@
 
 {% block content %}
     Login form
-    <form action="{{ url_for('authentication.login') }}" method="post"><br>
+    <form id="form" method="POST" novalidate><br>
         {{ form.csrf_token }}
-        <label for="email">Email</label>
-        <input type="text" value="email@example.com" name="email" id="email"><br>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password"><br>
-        <input type="submit" value="login">
+
+        <label for="email">Email</label><br>
+        {{ form.email }} <br>
+        <label for="password">Password</label><br>
+        {{ form.password }} <br>
+        <button type="submit">Login</button>
     </form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                email: document.getElementById('email'),
+                password: document.getElementById('password'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                email: fields.email.value,
+                password: fields.password.value
+            });
+            // send request to validate form
+            const response = await fetch("{{ url_for('authentication.login') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.authentication_api.login') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('home.index') }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                Object.keys(json).forEach(key => {
+                    fields[key].innerHTML = json[key];
+                });
+            }
+        });
+    </script>
 {% endblock %}

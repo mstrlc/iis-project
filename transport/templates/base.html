@@ -11,6 +11,12 @@
         <a href="{{ url_for('home.index') }}">Home</a>
         <a href="{{ url_for('authentication.register') }}">Register</a>
         <a href="{{ url_for('authentication.login') }}">Login</a>
+        <a href="{{ url_for('api.authentication_api.logout') }}">Logout</a>
+        {% if current_user.is_authenticated %}
+            <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </p>
+        {% else %}
+            <p>Not logged in</p>
+        {% endif %}
     </nav>
     <hr>
     <div class="content">
@@ -18,3 +24,5 @@
     </div>
 </body>
 </html>
+
+{% block js %} {% endblock %}

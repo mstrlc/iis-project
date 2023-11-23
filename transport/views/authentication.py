@@ -1,3 +1,4 @@
+
 from flask import Blueprint, jsonify, request, render_template
 from flask_wtf import FlaskForm
 from transport.models import User
@@ -11,10 +12,11 @@ def login():
     login_form = LoginForm()
     if request.method == "POST":
         if login_form.validate():
-            response_object = {
-                "status": "success"
+            res = {
+                "status": "success",
+                "message": "Form valid"
             }
-            return jsonify(response_object), 200
+            return jsonify(res), 200
         else:
             return jsonify(login_form.errors), 400
     return render_template("login.html", form=login_form)
@@ -25,18 +27,11 @@ def register():
     register_form = RegisterForm()
     if request.method == "POST":
         if register_form.validate():
-            #add user to database
-            user = User( 
-                email=register_form.email.data,
-                firstname=register_form.firstname.data,
-                lastname=register_form.lastname.data,
-                password=register_form.password.data
-            )
-            user.save()
-
-            userfromdb = User.query.filter_by(email=register_form.email.data).first()
-        
-            return jsonify(userfromdb), 200
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
         else:
             return jsonify(register_form.errors), 400
     return render_template("register.html", form=register_form)
