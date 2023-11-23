@@ -13,7 +13,7 @@ DATABASE_URI=mysql+pymysql://root:<your_password>@localhost/transport
 ```
 - run
 ```
-virtualenv ven
+virtualenv venv
 set -a
 . .myenv
 set +a 
