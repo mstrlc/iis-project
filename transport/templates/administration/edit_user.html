@@ -1,0 +1,80 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit user
+{% endblock %}
+
+{% block content %}
+<form id="form" method="POST" novalidate><br>
+    <div class="form-group">
+        {{ form.csrf_token }}
+        <input type="hidden" id="id" value="{{ user.id }}">
+        <label for="firstname">First name</label><br>
+        {{ form.firstname(class_="form-control")  }} <br>
+        <label for="lastname">Last name</label><br>
+        {{ form.lastname(class_="form-control") }} <br>
+        <label for="email">Email</label><br>
+        {{ form.email(class_="form-control") }} <br>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                firstname: document.getElementById('firstname'),
+                lastname: document.getElementById('lastname'),
+                email: document.getElementById('email'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                firstname: fields.firstname.value,
+                lastname: fields.lastname.value,
+                email: fields.email.value,
+            });
+            // send request to validate form
+            // figure out how to send the id
+            const response = await fetch("{{ url_for('administration.edit_user', user_id=user.id) }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.administration_api.edit_user') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('administration.users') }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                Object.keys(json).forEach(key => {
+                    fields[key].innerHTML = json[key];
+                });
+            }
+        });
+    </script>
+{% endblock %}
