@@ -1,5 +1,4 @@
-.myenv/
-.myvenv/
+.myenv
 .idea/
 .vscode/
 __pycache__/
