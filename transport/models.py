@@ -64,21 +64,21 @@ class User(db.Model):
         db.session.commit()
         db.session.expunge_all()
 
-class Stop(db.model):
+class Stop(db.Model):
     __tablename__='stops'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     latitude = Column(FLOAT, nullable=False)
     longitude = Column(FLOAT, nullable=False)
     
-class Line(db.model):
+class Line(db.Model):
     __tablename__='lines'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     line_stops = relationship('Stop', secondary=line_stops, backref='lines')
     
-class Vehicle(db.model):
+class Vehicle(db.Model):
     __tablename__='vehicles'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
@@ -88,7 +88,7 @@ class Vehicle(db.model):
     specs = Column(String(150), nullable=False)
     connections = relationship('Connection', backref='vehicles')
     
-class Connection(db.model):
+class Connection(db.Model):
     __tablename__='connections'
     id = Column(Integer, primary_key=True)
     time = Column(DateTime, nullable=False)
@@ -97,7 +97,7 @@ class Connection(db.model):
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=True)
     line_id = Column(Integer, ForeignKey('lines.id'), nullable=False)
 
-class Maintenance(db.model):
+class Maintenance(db.Model):
     __tablename__='maintenance'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
