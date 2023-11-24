@@ -11,7 +11,7 @@ from sqlalchemy import (
     Enum,
     Text,
     Boolean,
-    FLOAT,
+    Float,
 )
 
 from transport.extensions import db
@@ -68,16 +68,16 @@ class Stop(db.Model):
     __tablename__='stops'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
-    latitude = Column(FLOAT, nullable=False)
-    longitude = Column(FLOAT, nullable=False)
-    
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+
 class Line(db.Model):
     __tablename__='lines'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     line_stops = relationship('Stop', secondary=line_stops, backref='lines')
-    
+
 class Vehicle(db.Model):
     __tablename__='vehicles'
     id = Column(Integer, primary_key=True)
@@ -87,7 +87,7 @@ class Vehicle(db.Model):
     model = Column(String(100), nullable=False)
     specs = Column(String(150), nullable=False)
     connections = relationship('Connection', backref='vehicles')
-    
+
 class Connection(db.Model):
     __tablename__='connections'
     id = Column(Integer, primary_key=True)
