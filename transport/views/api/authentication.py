@@ -25,26 +25,32 @@ def login():
         user = User.query.filter_by(email=req.get("email")).first()
         # User does not exist in database
         if not user:
-            response_object = {
+            res = {
                 "status": "fail",
                 "message": "User does not exist",
             }
-            return make_response(jsonify(response_object), 401)
+            return make_response(jsonify(res), 401)
+        # User exists in database but is deleted
+        elif user.deleted:
+            res = {
+                "status": "fail",
+                "message": "User does not exist",
+            }
         # User exists in database but wrong password
         elif not user.verify_password(req.get("password")):
-            response_object = {
+            res = {
                 "status": "fail",
                 "message": "Wrong password",
             }
-            return make_response(jsonify(response_object), 401)
+            return make_response(jsonify(res), 401)
         # User exists in database and correct password
         else:
             login_user(user)
-            response_object = {
+            res = {
                 "status": "success",
                 "message": "Logged in successfully",
             }
-            return make_response(jsonify(response_object), 200)
+            return make_response(jsonify(res), 200)
 
 
 @login_required
@@ -75,11 +81,11 @@ def register():
         user = User.query.filter_by(email=req.get("email")).first()
         # User does not exist in database
         if user:
-            response_object = {
+            res = {
                 "status": "fail",
                 "message": "User already exists",
             }
-            return make_response(jsonify(response_object), 401)
+            return make_response(jsonify(res), 401)
         # New user
         else:
             user = User(
@@ -90,8 +96,8 @@ def register():
             )
 
             user.save()
-            response_object = {
+            res = {
                 "status": "success",
                 "message": "Registered successfully",
             }
-            return make_response(jsonify(response_object), 201)
+            return make_response(jsonify(res), 201)

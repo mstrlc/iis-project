@@ -30,6 +30,7 @@ class User(db.Model):
     email = Column(String(120), unique=True, nullable=False)
     firstname = Column(String(80), nullable=False)
     lastname = Column(String(80), nullable=False)
+    deleted = Column(Boolean, default=False)
     _password = Column("password", String(255), nullable=False)
 
     @property

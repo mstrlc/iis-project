@@ -37,3 +37,16 @@ def edit_user():
             "message": "Edited user successfully",
         }
         return make_response(jsonify(res), 200)
+
+@administration_api_bp.route("/remove_user", methods=["POST"])
+def remove_user():
+    req = request.get_json()
+    with current_app.app_context():
+        user = User.query.get(req.get("id"))
+        user.deleted = True
+        user.save()
+        res = {
+            "status": "success",
+            "message": "Removed user successfully",
+        }
+        return make_response(jsonify(res), 200)

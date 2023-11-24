@@ -17,6 +17,7 @@
         <label for="email">Email</label><br>
         {{ form.email(class_="form-control") }} <br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
+        <button class="btn btn-outline-danger" id="remove">Delete</button>
     </div>
 </form>
 {% endblock %}
@@ -41,7 +42,6 @@
                 email: fields.email.value,
             });
             // send request to validate form
-            // figure out how to send the id
             const response = await fetch("{{ url_for('administration.edit_user', user_id=user.id) }}", {
                 method: "POST",
                 headers: {
@@ -77,6 +77,39 @@
                     alert_message = alert_message + value + "\n";
                 }
                 alert(alert_message);
+            }
+        });
+
+        remove.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                firstname: document.getElementById('firstname'),
+                lastname: document.getElementById('lastname'),
+                email: document.getElementById('email'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+            });
+            const apiresponse = await fetch("{{ url_for('api.administration_api.remove_user') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle API response
+            if(apiresponse.ok) {
+                const json = await apiresponse.json();
+                // redirect to home
+                window.location.href = "{{ url_for('administration.users') }}";
+            } else {
+                // handle API error
+                const json = await apiresponse.json();
+                alert(json.message);
             }
         });
     </script>
