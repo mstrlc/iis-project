@@ -5,6 +5,8 @@ from wtforms import StringField, IntegerField, EmailField
 from wtforms.validators import DataRequired, Email
 from flask_login import current_user
 from flask import request, jsonify
+from wtforms import ValidationError
+import re
 
 management_bp = Blueprint("management", __name__)
 
@@ -47,3 +49,13 @@ class StopForm(FlaskForm):
     name = StringField("Stop Name", validators=[DataRequired()])
     latitude = StringField("Latitude", validators=[DataRequired()])
     longitude = StringField("Longitude", validators=[DataRequired()])
+
+    def validate_latitude(self, latitude):
+        # 49.2277139N
+        if not re.match(r"^\d+\.\d+[NS]$", latitude.data):
+            raise ValidationError("Invalid latitude format, should be WGS84 (degrees)")
+
+    def validate_longitude(self, longitude):
+        # 123.0074463W
+        if not re.match(r"^\d+\.\d+[EW]$", longitude.data):
+            raise ValidationError("Invalid longitude format, should be WGS84 (degrees)")
