@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template
 from transport.models import User
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, IntegerField, EmailField
+from wtforms.validators import DataRequired, Email
 from flask_login import current_user
 from flask import request, jsonify
 
@@ -32,4 +32,4 @@ class UserForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})
     firstname = StringField("First Name", validators=[DataRequired()])
     lastname = StringField("Last Name", validators=[DataRequired()])
-    email = StringField("Email", validators=[DataRequired()])
+    email = EmailField("Email Address", validators=[DataRequired(), Email()])

@@ -61,9 +61,12 @@
             } else {
                 // handle error
                 const json = await response.json();
-                Object.keys(json).forEach(key => {
-                    fields[key].innerHTML = json[key];
-                });
+                // get the error message
+                let alert_message = "";
+                for (const [key, value] of Object.entries(json)) {
+                    alert_message = alert_message + value + "\n";
+                }
+                alert(alert_message);
             }
         });
     </script>
