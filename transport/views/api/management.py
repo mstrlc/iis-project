@@ -58,13 +58,13 @@ def remove_stop():
         }
         return make_response(jsonify(res), 200)
     
-@management_api_bp.route('/add_vehicle')
+@management_api_bp.route("/add_vehicle", methods=["POST"])
 def add_vehicle():
     req = request.get_json()
     with current_app.app_context():
         vehicle = Vehicle()
         name = req.get("name")
-        type = req.get("tyoe")
+        type = req.get("type")
         make = req.get("make")
         model = req.get("model")
         specs = req.get("specs")
