@@ -100,6 +100,12 @@ class Vehicle(db.Model):
     status = Column(String(100), nullable=False)
     deleted = Column(Boolean, default=False)
     connections = relationship('Connection', backref='vehicles')
+    
+    def save(self):
+        db.session.expunge_all()
+        db.session.add(self)
+        db.session.commit()
+        db.session.expunge_all()
 
 class Connection(db.Model):
     __tablename__='connections'

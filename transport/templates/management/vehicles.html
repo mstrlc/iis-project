@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Vehicles
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('management.add_vehicle') }}" class="btn btn-outline-secondary">Add</a>
+    {% for vehicle in vehicles if vehicle.deleted != 1 %}
+        <div class="card">
+            <div class="card-body">
+                <div class="group align-right">
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ vehicle.id }}</h6>
+                    <h5 class="card-title">{{ vehicle.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.type }}, {{ vehicle.make }}, {{ vehicle.model }}, {{ vehicle.specs }}, {{ vehicle.status }}</h6>
+                    <a href="{{ url_for('management.edit_vehicle', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Edit</a>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+{% endblock %}

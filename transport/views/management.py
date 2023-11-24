@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from transport.models import Stop
+from transport.models import Stop, Vehicle
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, EmailField
 from wtforms.validators import DataRequired, Email
@@ -44,6 +44,40 @@ def edit_stop(stop_id):
             return jsonify(stop_form.errors), 400
     return render_template("management/edit_stop.html", form=stop_form, id=stop.id, stop=stop)
 
+@management_bp.route("/vehicles", methods=["GET", "POST"])
+def vehicles():
+    vehicles = Vehicle.query.all()
+    return render_template("management/vehicles.html", vehicles=vehicles)
+
+@management_bp.route("/vehicles/add", methods=["GET", "POST"])
+def add_vehicle():
+    vehicle_form = VehicleForm()
+    if request.method == "POST":
+        if vehicle_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(vehicle_form.errors), 400
+    return render_template("management/add_vehicle.html", form=vehicle_form)
+
+@management_bp.route("/vehicles/<int:vehicle_id>", methods=["GET", "POST"])
+def edit_vehicle(vehicle_id):
+    vehicle = Vehicle.query.get(vehicle_id)
+    vehicle_form = VehicleForm(obj=vehicle)
+    if request.method == "POST":
+        if vehicle_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(vehicle_form.errors), 400
+    return render_template("management/edit_vehicle.html", form=vehicle_form, id=vehicle.id, vehicle=vehicle)
+
 class StopForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})
     name = StringField("Stop Name", validators=[DataRequired()])
@@ -59,3 +93,12 @@ class StopForm(FlaskForm):
         # 123.0074463W
         if not re.match(r"^\d+\.\d+[EW]$", longitude.data):
             raise ValidationError("Invalid longitude format, should be WGS84 (degrees)")
+        
+class VehicleForm(FlaskForm):
+    id = IntegerField("ID", render_kw={'readonly': True})
+    name = StringField("Vehicle Name", validators=[DataRequired()])
+    type = StringField("Vehicle type", validators=[DataRequired()])
+    make = StringField("Make", validators=[DataRequired()])
+    model = StringField("Model", validators=[DataRequired()])
+    specs = StringField("Technical specs", validators=[DataRequired()])
+    status = StringField("Vehicle status", validators=[DataRequired()])

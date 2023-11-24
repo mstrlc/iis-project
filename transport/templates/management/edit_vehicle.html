@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit vehicle
+{% endblock %}
+
+{% block content %}
+<form id="form" method="POST" novalidate><br>
+    <div class="form-group">
+        {{ form.csrf_token }}
+        <label for="name">Name</label><br>
+        {{ form.name(class_="form-control")  }} <br>
+        <label for="type">type</label><br>
+        {{ form.type(class_="form-control") }} <br>
+        <label for="make">make</label><br>
+        {{ form.make(class_="form-control") }} <br>
+        <label for="model">model</label><br>
+        {{ form.model(class_="form-control") }} <br>
+        <label for="specs">specs</label><br>
+        {{ form.specs(class_="form-control") }} <br>
+        <label for="status">status</label><br>
+        {{ form.status(class_="form-control") }} <br>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+        <button class="btn btn-outline-danger" id="remove">Delete</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                name: document.getElementById('name'),
+                type: document.getElementById('type'),
+                make: document.getElementById('make'),
+                model: document.getElementById('model'),
+                specs: document.getElementById('specs'),
+                status: document.getElementById('status'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                name: fields.name.value,
+                type: fields.type.value,
+                make: fields.make.value,
+                model: fields.model.value,
+                specs: fields.specs.value,
+                status: fields.status.value,
+            });
+            // send request to validate form
+            const response = await fetch("{{ url_for('management.edit_vehicle', vehicle_id=vehicle.id) }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.management_api.edit_vehicle') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.vehicles', vehicle_id=vehicle.id) }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                // get the error message
+                let alert_message = "";
+                for (const [key, value] of Object.entries(json)) {
+                    alert_message = alert_message + value + "\n";
+                }
+                alert(alert_message);
+            }
+        });
+
+        remove.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                name: document.getElementById('name'),
+                type: document.getElementById('type'),
+                make: document.getElementById('make'),
+                model: document.getElementById('model'),
+                specs: document.getElementById('specs'),
+                status: document.getElementById('status'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+            });
+            const apiresponse = await fetch("{{ url_for('api.management_api.remove_vehicle') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle API response
+            if(apiresponse.ok) {
+                const json = await apiresponse.json();
+                // redirect to home
+                window.location.href = "{{ url_for('management.vehicles') }}";
+            } else {
+                // handle API error
+                const json = await apiresponse.json();
+                alert(json.message);
+            }
+        });
+    </script>
+{% endblock %}
