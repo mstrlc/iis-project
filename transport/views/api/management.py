@@ -57,7 +57,7 @@ def remove_stop():
             "message": "Removed stop successfully",
         }
         return make_response(jsonify(res), 200)
-    
+
 @management_api_bp.route("/add_vehicle", methods=["POST"])
 def add_vehicle():
     req = request.get_json()
@@ -81,7 +81,7 @@ def add_vehicle():
             "message": "Add vehicle successfully",
         }
         return make_response(jsonify(res), 200)
-    
+
 @management_api_bp.route("/edit_vehicle", methods=["POST"])
 def edit_vehicle():
     req = request.get_json()

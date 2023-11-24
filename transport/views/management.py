@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from transport.models import Stop, Vehicle
+from transport.models import Stop, Vehicle, Line
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, EmailField
 from wtforms.validators import DataRequired, Email
@@ -43,6 +43,40 @@ def edit_stop(stop_id):
         else:
             return jsonify(stop_form.errors), 400
     return render_template("management/edit_stop.html", form=stop_form, id=stop.id, stop=stop)
+
+@management_bp.route("/lines", methods=["GET", "POST"])
+def lines():
+    lines = Line.query.all()
+    return render_template("management/lines.html", lines=lines)
+
+@management_bp.route("/lines/add", methods=["GET", "POST"])
+def add_line():
+    line_form = LineForm()
+    if request.method == "POST":
+        if line_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(line_form.errors), 400
+    return render_template("management/add_line.html", form=line_form)
+
+@management_bp.route("/lines/<int:line_id>", methods=["GET", "POST"])
+def edit_line(line_id):
+    line = Line.query.get(line_id)
+    line_form = LineForm(obj=line)
+    if request.method == "POST":
+        if line_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(line.errors), 400
+    return render_template("management/edit_line.html", form=line_form, id=line.id, line=line)
 
 @management_bp.route("/vehicles", methods=["GET", "POST"])
 def vehicles():
@@ -93,7 +127,11 @@ class StopForm(FlaskForm):
         # 123.0074463W
         if not re.match(r"^\d+\.\d+[EW]$", longitude.data):
             raise ValidationError("Invalid longitude format, should be WGS84 (degrees)")
-        
+
+class LineForm(FlaskForm):
+    id = IntegerField("ID", render_kw={'readonly': True})
+    name = StringField("Line Name", validators=[DataRequired()])
+
 class VehicleForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})
     name = StringField("Vehicle Name", validators=[DataRequired()])
