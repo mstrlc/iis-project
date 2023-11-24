@@ -7,6 +7,7 @@ from sqlalchemy import (
     String,
     ForeignKey,
     DateTime,
+    Time,
     Date,
     Enum,
     Text,
@@ -71,6 +72,7 @@ class Stop(db.Model):
     name = Column(String(100), unique=True, nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
+    stop_lines = relationship('Line', secondary=line_stops, backref='stops')
 
 class Line(db.Model):
     __tablename__='lines'
@@ -87,12 +89,13 @@ class Vehicle(db.Model):
     make = Column(String(100), nullable=False)
     model = Column(String(100), nullable=False)
     specs = Column(String(150), nullable=False)
+    status = Column(String(100), nullable=False)
     connections = relationship('Connection', backref='vehicles')
 
 class Connection(db.Model):
     __tablename__='connections'
     id = Column(Integer, primary_key=True)
-    time = Column(DateTime, nullable=False)
+    time = Column(Time, nullable=False)
     direction = Column(String(20), nullable=False)
     days_of_week = Column(String(100), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=True)
@@ -102,4 +105,5 @@ class Maintenance(db.Model):
     __tablename__='maintenance'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
+    description = Column(Text(2048), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
