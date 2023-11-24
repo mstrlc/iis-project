@@ -6,8 +6,10 @@ from transport.extensions import db, login_manager
 from transport.views.home import home_bp
 from transport.views.authentication import authentication_bp
 from transport.views.administration import administration_bp
+from transport.views.management import management_bp
 from transport.views.api.authentication import authentication_api_bp
 from transport.views.api.administration import administration_api_bp
+from transport.views.api.management import management_api_bp
 from dotenv import load_dotenv
 from transport.models import User
 
@@ -33,10 +35,12 @@ def create_app():
     app.register_blueprint(home_bp)
     app.register_blueprint(authentication_bp)
     app.register_blueprint(administration_bp)
+    app.register_blueprint(management_bp)
 
     api_bp = Blueprint("api", __name__, url_prefix="/api")
     api_bp.register_blueprint(authentication_api_bp)
     api_bp.register_blueprint(administration_api_bp)
+    api_bp.register_blueprint(management_api_bp)
     app.register_blueprint(api_bp)
 
     return app

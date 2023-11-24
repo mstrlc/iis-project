@@ -70,15 +70,23 @@ class Stop(db.Model):
     __tablename__='stops'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
+    latitude = Column(String(20), nullable=False)
+    longitude = Column(String(20), nullable=False)
+    deleted = Column(Boolean, default=False)
     stop_lines = relationship('Line', secondary=line_stops, backref='stops')
+
+    def save(self):
+        db.session.expunge_all()
+        db.session.add(self)
+        db.session.commit()
+        db.session.expunge_all()
 
 class Line(db.Model):
     __tablename__='lines'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
+    deleted = Column(Boolean, default=False)
     line_stops = relationship('Stop', secondary=line_stops, backref='lines')
 
 class Vehicle(db.Model):
@@ -90,6 +98,7 @@ class Vehicle(db.Model):
     model = Column(String(100), nullable=False)
     specs = Column(String(150), nullable=False)
     status = Column(String(100), nullable=False)
+    deleted = Column(Boolean, default=False)
     connections = relationship('Connection', backref='vehicles')
 
 class Connection(db.Model):
@@ -99,6 +108,7 @@ class Connection(db.Model):
     direction = Column(String(20), nullable=False)
     days_of_week = Column(String(100), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=True)
+    deleted = Column(Boolean, default=False)
     line_id = Column(Integer, ForeignKey('lines.id'), nullable=False)
 
 class Maintenance(db.Model):
@@ -106,4 +116,5 @@ class Maintenance(db.Model):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
     description = Column(Text(2048), nullable=False)
+    deleted = Column(Boolean, default=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)

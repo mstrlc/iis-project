@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Stops
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('management.add_stop') }}" class="btn btn-outline-secondary">Add</a>
+    {% for stop in stops if stop.deleted != 1 %}
+        <div class="card">
+            <div class="card-body">
+                <div class="group align-right">
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ stop.id }}</h6>
+                    <h5 class="card-title">{{ stop.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ stop.latitude }}, {{ stop.longitude }}</h6>
+                    <a href="{{ url_for('management.edit_stop', stop_id=stop.id) }}" class="btn btn-outline-secondary">Edit</a>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+{% endblock %}

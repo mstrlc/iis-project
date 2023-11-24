@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Edit user
+    Edit stop
 {% endblock %}
 
 {% block content %}
 <form id="form" method="POST" novalidate><br>
     <div class="form-group">
         {{ form.csrf_token }}
-        <input type="hidden" id="id" value="{{ user.id }}">
-        <label for="firstname">First name</label><br>
-        {{ form.firstname(class_="form-control")  }} <br>
-        <label for="lastname">Last name</label><br>
-        {{ form.lastname(class_="form-control") }} <br>
-        <label for="email">Email</label><br>
-        {{ form.email(class_="form-control") }} <br>
+        <input type="hidden" id="id" value="{{ stop.id }}">
+        <label for="name">Name</label><br>
+        {{ form.name(class_="form-control")  }} <br>
+        <label for="latitude">Latitude</label><br>
+        {{ form.latitude(class_="form-control") }} <br>
+        <label for="longitude">Longitude</label><br>
+        {{ form.longitude(class_="form-control") }} <br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
         <button class="btn btn-outline-danger" id="remove">Delete</button>
     </div>
@@ -28,20 +28,20 @@
             const fields = {
                 csrf_token: document.getElementById('csrf_token'),
                 id: document.getElementById('id'),
-                firstname: document.getElementById('firstname'),
-                lastname: document.getElementById('lastname'),
-                email: document.getElementById('email'),
+                name: document.getElementById('name'),
+                latitude: document.getElementById('latitude'),
+                longitude: document.getElementById('longitude'),
             };
             // jsonify input
             const data = JSON.stringify({
                 csrf_token: fields.csrf_token.value,
                 id: fields.id.value,
-                firstname: fields.firstname.value,
-                lastname: fields.lastname.value,
-                email: fields.email.value,
+                name: fields.name.value,
+                latitude: fields.latitude.value,
+                longitude: fields.longitude.value,
             });
             // send request to validate form
-            const response = await fetch("{{ url_for('administration.edit_user', user_id=user.id) }}", {
+            const response = await fetch("{{ url_for('management.edit_stop', stop_id=stop.id) }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -50,7 +50,7 @@
             });
             // handle response
             if(response.ok) {
-                const apiresponse = await fetch("{{ url_for('api.administration_api.edit_user') }}", {
+                const apiresponse = await fetch("{{ url_for('api.management_api.edit_stop') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -61,7 +61,7 @@
                 if(apiresponse.ok) {
                     const json = await apiresponse.json();
                     // redirect to home
-                    window.location.href = "{{ url_for('administration.users') }}";
+                    window.location.href = "{{ url_for('management.stops', stop_id=stop.id) }}";
                 } else {
                     // handle API error
                     const json = await apiresponse.json();
@@ -84,16 +84,16 @@
             const fields = {
                 csrf_token: document.getElementById('csrf_token'),
                 id: document.getElementById('id'),
-                firstname: document.getElementById('firstname'),
-                lastname: document.getElementById('lastname'),
-                email: document.getElementById('email'),
+                name: document.getElementById('name'),
+                latitude: document.getElementById('latitude'),
+                longitude: document.getElementById('longitude'),
             };
             // jsonify input
             const data = JSON.stringify({
                 csrf_token: fields.csrf_token.value,
                 id: fields.id.value,
             });
-            const apiresponse = await fetch("{{ url_for('api.administration_api.remove_user') }}", {
+            const apiresponse = await fetch("{{ url_for('api.management_api.remove_stop') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -104,7 +104,7 @@
             if(apiresponse.ok) {
                 const json = await apiresponse.json();
                 // redirect to home
-                window.location.href = "{{ url_for('administration.users') }}";
+                window.location.href = "{{ url_for('management.stops') }}";
             } else {
                 // handle API error
                 const json = await apiresponse.json();

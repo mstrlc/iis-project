@@ -11,6 +11,7 @@
     <nav>
         <a href="{{ url_for('home.index') }}">Home</a>
         <a href="{{ url_for('administration.users') }}">Administration</a>
+        <a href="{{ url_for('management.stops') }}">Stops</a>
         {% if current_user.is_authenticated %}
             <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} – {{ current_user.email }} </p>
             <button id="logout" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
