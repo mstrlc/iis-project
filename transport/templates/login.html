@@ -9,10 +9,10 @@
         {{ form.csrf_token }}
 
         <label for="email">Email</label><br>
-        {{ form.email }} <br>
+        {{ form.email(class_="form-control") }} <br>
         <label for="password">Password</label><br>
-        {{ form.password }} <br>
-        <button type="submit">Login</button>
+        {{ form.password(class_="form-control") }} <br>
+        <button class="btn btn-outline-secondary" type="submit">Login</button>
     </form>
 {% endblock %}
 
