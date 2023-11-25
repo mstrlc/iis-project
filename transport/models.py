@@ -76,7 +76,7 @@ class Stop(db.Model):
     latitude = Column(String(20), nullable=False)
     longitude = Column(String(20), nullable=False)
     deleted = Column(Boolean, default=False)
-    stop_lines = relationship('Line', secondary=lines_stops, backref='stops', cascade='all, delete')
+    stop_lines = relationship('Line', secondary=lines_stops, backref='stops')
 
     def save(self):
         db.session.expunge_all()
@@ -90,7 +90,7 @@ class Line(db.Model):
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     deleted = Column(Boolean, default=False)
-    line_stops = relationship('Stop', secondary=lines_stops, backref='lines', cascade='all, delete')
+    line_stops = relationship('Stop', secondary=lines_stops, backref='lines')
     
     def save(self):
         db.session.expunge_all()

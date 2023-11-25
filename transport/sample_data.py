@@ -30,7 +30,7 @@ def insert_sample_users():
     for i, user in enumerate(users):
         if not User.query.filter_by(email=f'{user}@transport.com').first():
             new_user = User(email=f'{user}@transport.com', firstname=names[i].split(' ', 1)[0], lastname=names[i].split(' ', 1)[1], role=user)
-            new_user.password = '{user}p'
+            new_user.password = user
             new_user.save()
 
 def insert_sample_vehicles():
