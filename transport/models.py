@@ -20,8 +20,8 @@ from transport.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 lines_stops = db.Table('lines_stops',
-                    Column('line_id', Integer, ForeignKey('lines.id'), primary_key = True),
-                    Column('stop_id', Integer, ForeignKey('stops.id'), primary_key = True),
+                    Column('line_id', Integer, ForeignKey('lines.id')),
+                    Column('stop_id', Integer, ForeignKey('stops.id')),
                     Column('time_from_start', Time, nullable=False, default=datetime.datetime.min),
                     Column('order', Integer, nullable=False, default=0),
                     )
@@ -76,7 +76,6 @@ class Stop(db.Model):
     latitude = Column(String(20), nullable=False)
     longitude = Column(String(20), nullable=False)
     deleted = Column(Boolean, default=False)
-    stop_lines = relationship('Line', secondary=lines_stops, backref='stops')
 
     def save(self):
         db.session.expunge_all()

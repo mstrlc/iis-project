@@ -12,6 +12,9 @@
                 <div class="group align-right">
                     <h6 class="card-subtitle mb-2 text-muted">#{{ line.id }}</h6>
                     <h5 class="card-title">{{ line.name }}</h5>
+                    {% for stop in line.line_stops %}
+                        <h6 class="card-subtitle mb-2 text-muted">{{ stop.name }}</h6>
+                    {% endfor %}
                     <!-- <h6 class="card-subtitle mb-2 text-muted">{{ line.type }}, {{ line.make }}, {{ line.model }}, {{ line.specs }}, {{ line.status }}</h6> -->
                     <a href="{{ url_for('management.edit_line', line_id=line.id) }}" class="btn btn-outline-secondary">Edit</a>
                 </div>
