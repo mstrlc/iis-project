@@ -19,7 +19,7 @@ import datetime
 from transport.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-lines_stops = db.Table('LineStop',
+lines_stops = db.Table('lines_stops',
                     Column('line_id', Integer, ForeignKey('lines.id'), primary_key = True),
                     Column('stop_id', Integer, ForeignKey('stops.id'), primary_key = True),
                     Column('time_from_start', Time, nullable=False, default=datetime.datetime.min),
@@ -28,12 +28,13 @@ lines_stops = db.Table('LineStop',
 
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     email = Column(String(120), unique=True, nullable=False)
     firstname = Column(String(80), nullable=False)
     lastname = Column(String(80), nullable=False)
     deleted = Column(Boolean, default=False)
+    role = Column(Enum('admin', 'manager', 'technician', 'dispatcher', 'driver', 'customer', name='role'), nullable=False, default='customer')
     _password = Column("password", String(255), nullable=False)
 
     @property
@@ -75,7 +76,7 @@ class Stop(db.Model):
     latitude = Column(String(20), nullable=False)
     longitude = Column(String(20), nullable=False)
     deleted = Column(Boolean, default=False)
-    stop_lines = relationship('Line', secondary=lines_stops, backref='stops')
+    stop_lines = relationship('Line', secondary=lines_stops, backref='stops', cascade='all, delete')
 
     def save(self):
         db.session.expunge_all()
@@ -89,8 +90,8 @@ class Line(db.Model):
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     deleted = Column(Boolean, default=False)
-    line_stops = relationship('Stop', secondary=lines_stops, backref='lines')
-
+    line_stops = relationship('Stop', secondary=lines_stops, backref='lines', cascade='all, delete')
+    
     def save(self):
         db.session.expunge_all()
         db.session.add(self)
@@ -125,6 +126,12 @@ class Connection(db.Model):
     deleted = Column(Boolean, default=False)
     line_id = Column(Integer, ForeignKey('lines.id'), nullable=False)
 
+    def save(self):
+        db.session.expunge_all()
+        db.session.add(self)
+        db.session.commit()
+        db.session.expunge_all()
+
 class Maintenance(db.Model):
     __tablename__='maintenance'
     id = Column(Integer, primary_key=True)
@@ -132,3 +139,9 @@ class Maintenance(db.Model):
     description = Column(Text(2048), nullable=False)
     deleted = Column(Boolean, default=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
+    
+    def save(self):
+        db.session.expunge_all()
+        db.session.add(self)
+        db.session.commit()
+        db.session.expunge_all()

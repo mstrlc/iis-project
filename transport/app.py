@@ -12,6 +12,7 @@ from transport.views.api.administration import administration_api_bp
 from transport.views.api.management import management_api_bp
 from dotenv import load_dotenv
 from transport.models import User
+from transport.sample_data import insert_sample_users, insert_sample_vehicles, insert_sample_stops, insert_sample_lines
 
 def create_app():
     app = Flask(__name__)
@@ -27,7 +28,9 @@ def create_app():
     login_manager.init_app(app)
     db.init_app(app)
     with app.app_context():
-        db.create_all()
+        
+        models_changed(app)
+
         db.session.commit()
         db.session.expunge_all()
         db.session.remove()
@@ -44,6 +47,17 @@ def create_app():
     app.register_blueprint(api_bp)
 
     return app
+
+
+def models_changed(app):
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+        insert_sample_lines()
+        insert_sample_stops()
+        insert_sample_vehicles()
+        insert_sample_users()
+
 
 @login_manager.user_loader
 def user_loader(user_id):
