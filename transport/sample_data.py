@@ -15,9 +15,9 @@ def generate_random_names(num_names, entity):
         prefixes = brno_prefixes
         suffixes = brno_suffixes
     names = []
-    for _ in range(num_names):
-        first_name = random.choice(prefixes)
-        last_name = random.choice(suffixes)
+    for i, prefix in enumerate(prefixes):
+        first_name = prefixes[i]
+        last_name = suffixes[i]
         names.append(f"{first_name} {last_name}")
 
     return names
