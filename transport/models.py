@@ -14,16 +14,18 @@ from sqlalchemy import (
     Boolean,
     Float,
 )
+import datetime
 
 from transport.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-line_stops = db.Table('LineStop',
+lines_stops = db.Table('LineStop',
                     Column('line_id', Integer, ForeignKey('lines.id'), primary_key = True),
                     Column('stop_id', Integer, ForeignKey('stops.id'), primary_key = True),
-                    Column('time_from_start', DateTime, nullable=False),
-                    Column('order', Integer, nullable=False)
+                    Column('time_from_start', Time, nullable=False, default=datetime.datetime.min),
+                    Column('order', Integer, nullable=False, default=0),
                     )
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -73,7 +75,7 @@ class Stop(db.Model):
     latitude = Column(String(20), nullable=False)
     longitude = Column(String(20), nullable=False)
     deleted = Column(Boolean, default=False)
-    stop_lines = relationship('Line', secondary=line_stops, backref='stops')
+    stop_lines = relationship('Line', secondary=lines_stops, backref='stops')
 
     def save(self):
         db.session.expunge_all()
@@ -87,7 +89,13 @@ class Line(db.Model):
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     deleted = Column(Boolean, default=False)
-    line_stops = relationship('Stop', secondary=line_stops, backref='lines')
+    line_stops = relationship('Stop', secondary=lines_stops, backref='lines')
+
+    def save(self):
+        db.session.expunge_all()
+        db.session.add(self)
+        db.session.commit()
+        db.session.expunge_all()
 
 class Vehicle(db.Model):
     __tablename__='vehicles'
@@ -100,7 +108,7 @@ class Vehicle(db.Model):
     status = Column(String(100), nullable=False)
     deleted = Column(Boolean, default=False)
     connections = relationship('Connection', backref='vehicles')
-    
+
     def save(self):
         db.session.expunge_all()
         db.session.add(self)

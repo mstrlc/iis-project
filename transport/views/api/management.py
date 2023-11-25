@@ -5,7 +5,8 @@ from flask import jsonify
 from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
-from transport.models import Stop, Vehicle
+from transport.extensions import db
+from transport.models import Stop, Vehicle, Line
 
 management_api_bp = Blueprint("management_api", __name__)
 
@@ -55,6 +56,75 @@ def remove_stop():
         res = {
             "status": "success",
             "message": "Removed stop successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/add_line", methods=["POST"])
+def add_line():
+    req = request.get_json()
+    with current_app.app_context():
+        line = Line()
+        name = req.get("name")
+        line.name = name
+        line.save()
+        res = {
+            "status": "success",
+            "message": "Add line successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/edit_line", methods=["POST"])
+def edit_line():
+    req = request.get_json()
+    with current_app.app_context():
+        line = Line.query.get(req.get("id"))
+        name = req.get("name")
+        line.name = name
+        line.save()
+        res = {
+            "status": "success",
+            "message": "Edit line successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/remove_line", methods=["POST"])
+def remove_line():
+    req = request.get_json()
+    with current_app.app_context():
+        line = Line.query.get(req.get("id"))
+        line.deleted = True
+        line.save()
+        res = {
+            "status": "success",
+            "message": "Removed line successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/add_stop_to_line", methods=["POST"])
+def add_stop_to_line():
+    req = request.get_json()
+    with current_app.app_context():
+        line = Line.query.get(req.get("id"))
+        stop = Stop.query.get(req.get("stop_id"))
+        line.line_stops.append(stop)
+        line.save()
+        res = {
+            "status": "success",
+            "message": "Add stop to line successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/remove_stop_from_line", methods=["POST"])
+def remove_stop_from_line():
+    req = request.get_json()
+    with current_app.app_context():
+        line = Line.query.get(req.get("id"))
+        stop = Stop.query.get(req.get("stop_id"))
+        line.line_stops.remove(stop)
+        line.save()
+        res = {
+            "status": "success",
+            "message": "Remove stop from line successfully",
         }
         return make_response(jsonify(res), 200)
 

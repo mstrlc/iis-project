@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from transport.models import Stop, Vehicle, Line
+from transport.models import Stop, Vehicle, Line, lines_stops
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, EmailField
 from wtforms.validators import DataRequired, Email
@@ -66,6 +66,8 @@ def add_line():
 @management_bp.route("/lines/<int:line_id>", methods=["GET", "POST"])
 def edit_line(line_id):
     line = Line.query.get(line_id)
+    stops = Stop.query.all()
+    line_stops = line.line_stops
     line_form = LineForm(obj=line)
     if request.method == "POST":
         if line_form.validate():
@@ -76,7 +78,7 @@ def edit_line(line_id):
             return jsonify(res), 200
         else:
             return jsonify(line.errors), 400
-    return render_template("management/edit_line.html", form=line_form, id=line.id, line=line)
+    return render_template("management/edit_line.html", form=line_form, id=line.id, line=line, stops=stops, line_stops=line_stops)
 
 @management_bp.route("/vehicles", methods=["GET", "POST"])
 def vehicles():

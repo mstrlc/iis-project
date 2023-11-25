@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lines
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('management.add_line') }}" class="btn btn-outline-secondary">Add</a>
+    {% for line in lines if line.deleted != 1 %}
+        <div class="card">
+            <div class="card-body">
+                <div class="group align-right">
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ line.id }}</h6>
+                    <h5 class="card-title">{{ line.name }}</h5>
+                    <!-- <h6 class="card-subtitle mb-2 text-muted">{{ line.type }}, {{ line.make }}, {{ line.model }}, {{ line.specs }}, {{ line.status }}</h6> -->
+                    <a href="{{ url_for('management.edit_line', line_id=line.id) }}" class="btn btn-outline-secondary">Edit</a>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+{% endblock %}

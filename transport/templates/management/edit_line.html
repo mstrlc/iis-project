@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit line
+{% endblock %}
+
+{% block content %}
+<form id="form" method="POST" novalidate><br>
+    <div class="form-group">
+        {{ form.csrf_token }}
+        <input type="hidden" id="id" value="{{ line.id }}">
+        <label for="name">Name</label><br>
+        {{ form.name(class_="form-control")  }} <br>
+
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+        <button class="btn btn-outline-danger" id="remove">Delete</button>
+
+        <h3>Stops</h3>
+        <ul>
+            {% for stop in line_stops if stop.deleted != 1 %}
+            <div>
+                <h5 class="card-title">{{ stop.name }}</h5>
+                <a id="remove-stop-{{stop.id}}" class="btn btn-outline-secondary">Remove from line</a>
+            </div>
+            <br>
+            {% endfor %}
+        </ul>
+
+        Add stop
+        <select name="stops" id="stops">
+            {% for stop in stops if stop not in line.stops %}
+                <option value="{{ stop.id }}">{{ stop.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" id="add_stop">Add stop</button>
+        <br>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        const form = document.getElementById("form");
+        const add_stop = document.getElementById("add_stop");
+        const remove_buttons = document.querySelectorAll('[id^="remove-stop-"]');
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                name: document.getElementById('name'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                name: fields.name.value,
+            });
+            // send request to validate form
+            const response = await fetch("{{ url_for('management.edit_line', line_id=line.id) }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.management_api.edit_line') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.lines') }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                // get the error message
+                let alert_message = "";
+                for (const [key, value] of Object.entries(json)) {
+                    alert_message = alert_message + value + "\n";
+                }
+                alert(alert_message);
+            }
+        });
+
+        remove.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                name: document.getElementById('name'),
+                stop: document.getElementById('stops'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+            });
+            const apiresponse = await fetch("{{ url_for('api.management_api.remove_line') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle API response
+            if(apiresponse.ok) {
+                const json = await apiresponse.json();
+                // redirect to home
+                window.location.href = "{{ url_for('management.lines') }}";
+            } else {
+                // handle API error
+                const json = await apiresponse.json();
+                alert(json.message);
+            }
+        });
+
+        add_stop.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                stop: document.getElementById('stops'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                stop_id: fields.stop.value,
+            });
+            const apiresponse = await fetch("{{ url_for('api.management_api.add_stop_to_line') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle API response
+            if(apiresponse.ok) {
+                const json = await apiresponse.json();
+                // redirect to home
+                window.location.href = "{{ url_for('management.edit_line', line_id=line.id) }}";
+            } else {
+                // handle API error
+                const json = await apiresponse.json();
+                alert(json.message);
+            }
+        });
+
+        remove_buttons.forEach((button) => {
+            button.addEventListener("click", async (e) => {
+                e.preventDefault();
+                const fields = {
+                    csrf_token: document.getElementById('csrf_token'),
+                    id: document.getElementById('id'),
+                };
+                // jsonify input
+                const data = JSON.stringify({
+                    csrf_token: fields.csrf_token.value,
+                    id: fields.id.value,
+                    stop_id: button.id.split("-")[2],
+                });
+                const apiresponse = await fetch("{{ url_for('api.management_api.remove_stop_from_line') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.edit_line', line_id=line.id) }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            });
+        });
+    </script>
+{% endblock %}
