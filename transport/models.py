@@ -26,8 +26,20 @@ lines_stops = db.Table('lines_stops',
                     Column('order', Integer, nullable=False, default=0),
                     )
 
+class Base(object):
+    def save(self):
+        db.session.expunge_all()
+        db.session.add(self)
+        db.session.commit()
+        db.session.expunge_all()
 
-class User(db.Model):
+    def remove(self):
+        db.session.expunge_all()
+        db.session.delete(self)
+        db.session.commit()
+        db.session.expunge_all()
+
+class User(db.Model, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     email = Column(String(120), unique=True, nullable=False)
@@ -63,13 +75,8 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self._password, password)
 
-    def save(self):
-        db.session.expunge_all()
-        db.session.add(self)
-        db.session.commit()
-        db.session.expunge_all()
 
-class Stop(db.Model):
+class Stop(db.Model, Base):
     __tablename__='stops'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
@@ -77,27 +84,17 @@ class Stop(db.Model):
     longitude = Column(String(20), nullable=False)
     deleted = Column(Boolean, default=False)
 
-    def save(self):
-        db.session.expunge_all()
-        db.session.add(self)
-        db.session.commit()
-        db.session.expunge_all()
 
-class Line(db.Model):
+class Line(db.Model, Base):
     __tablename__='lines'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     deleted = Column(Boolean, default=False)
-    line_stops = relationship('Stop', secondary=lines_stops, backref='lines')
+    line_stops = relationship('Stop', secondary=lines_stops, backref='lines', cascade='all, delete')
     
-    def save(self):
-        db.session.expunge_all()
-        db.session.add(self)
-        db.session.commit()
-        db.session.expunge_all()
 
-class Vehicle(db.Model):
+class Vehicle(db.Model, Base):
     __tablename__='vehicles'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
@@ -109,13 +106,8 @@ class Vehicle(db.Model):
     deleted = Column(Boolean, default=False)
     connections = relationship('Connection', backref='vehicles')
 
-    def save(self):
-        db.session.expunge_all()
-        db.session.add(self)
-        db.session.commit()
-        db.session.expunge_all()
 
-class Connection(db.Model):
+class Connection(db.Model, Base):
     __tablename__='connections'
     id = Column(Integer, primary_key=True)
     time = Column(Time, nullable=False)
@@ -125,13 +117,8 @@ class Connection(db.Model):
     deleted = Column(Boolean, default=False)
     line_id = Column(Integer, ForeignKey('lines.id'), nullable=False)
 
-    def save(self):
-        db.session.expunge_all()
-        db.session.add(self)
-        db.session.commit()
-        db.session.expunge_all()
 
-class Maintenance(db.Model):
+class Maintenance(db.Model, Base):
     __tablename__='maintenance'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
@@ -139,8 +126,3 @@ class Maintenance(db.Model):
     deleted = Column(Boolean, default=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
     
-    def save(self):
-        db.session.expunge_all()
-        db.session.add(self)
-        db.session.commit()
-        db.session.expunge_all()

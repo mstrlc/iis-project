@@ -50,9 +50,8 @@ def edit_stop():
 def remove_stop():
     req = request.get_json()
     with current_app.app_context():
-        stop = Stop.query.get(req.get("id"))
-        stop.deleted = True
-        stop.save()
+        stop = Stop.query.query.get(req.get("id"))
+        stop.remove()
         res = {
             "status": "success",
             "message": "Removed stop successfully",
@@ -92,8 +91,7 @@ def remove_line():
     req = request.get_json()
     with current_app.app_context():
         line = Line.query.get(req.get("id"))
-        line.deleted = True
-        line.save()
+        line.remove()
         res = {
             "status": "success",
             "message": "Removed line successfully",
@@ -181,9 +179,8 @@ def edit_vehicle():
 def remove_vehicle():
     req = request.get_json()
     with current_app.app_context():
-        vehicle = Vehicle.query.get(req.get("id"))
-        vehicle.deleted = True
-        vehicle.save()
+        vehicle = Vehicle.query.query.get(req.get("id"))
+        vehicle.remove()
         res = {
             "status": "success",
             "message": "Removed vehicle successfully",
