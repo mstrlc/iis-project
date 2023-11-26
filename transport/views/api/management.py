@@ -154,9 +154,8 @@ def edit_vehicle():
     req = request.get_json()
     with current_app.app_context():
         vehicle = Vehicle.query.get(req.get("id"))
-        vehicle = Vehicle()
         name = req.get("name")
-        type = req.get("tyoe")
+        type = req.get("type")
         make = req.get("make")
         model = req.get("model")
         specs = req.get("specs")

@@ -8,6 +8,7 @@
 <form id="form" method="POST" novalidate><br>
     <div class="form-group">
         {{ form.csrf_token }}
+        <input type="hidden" id="id" value="{{ vehicle.id }}">
         <label for="name">Name</label><br>
         {{ form.name(class_="form-control")  }} <br>
         <label for="type">type</label><br>
@@ -19,7 +20,16 @@
         <label for="specs">specs</label><br>
         {{ form.specs(class_="form-control") }} <br>
         <label for="status">status</label><br>
-        {{ form.status(class_="form-control") }} <br>
+        <select id="status">
+            {% if vehicle.status == "good" %}
+                <option value="good" selected>Good</option>
+                <option value="maintenance">Needs maintenance</option>
+            {% else %}
+                <option value="good">Good</option>
+                <option value="maintenance" selected>Needs maintenance</option>
+            {% endif %}
+        </select>
+        <br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
         <button class="btn btn-outline-danger" id="remove">Delete</button>
     </div>
