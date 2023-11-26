@@ -46,12 +46,12 @@ def insert_sample_vehicles():
         if not Vehicle.query.filter_by(type=vehicle).first():
             new_vehicle = Vehicle(name=names[i], type=vehicle, make=make[i], model=model[i], specs=specs[i], status=status[i] )
             new_vehicle.save()
-    
+
 def insert_sample_stops():
     from transport.models import Stop
-    stops = [ "Jugoslávská", "Semilasso", "Hlavní nádraží" ]
-    longitudes = [ "49.2044942N", "49.2277139N", "49.1911869N" ] 
-    latitudes = [ "16.6237300E", "16.5925569E", "16.6122861E" ]
+    stops = [ "Jugoslávská", "Semilasso", "Hlavní nádraží", "Husitská", "Kartouzská", "Nové sady" ]
+    longitudes = [ "49.2044942N", "49.2277139N", "49.1911869N", "49.1911869N", "49.1911869N", "49.1911869N" ]
+    latitudes = [ "16.6237300E", "16.5925569E", "16.6122861E", "16.6122861E", "16.6122861E", "16.6122861E" ]
     # for each check if users already exist
     for i, stop in enumerate(stops):
         if not Stop.query.filter_by(name=stop).first():
