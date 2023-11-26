@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
-from transport.models import Stop, Vehicle, Line, LinesStops
+from transport.models import Stop, Vehicle, Line, LinesStops, Connection
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, EmailField
+from wtforms import StringField, IntegerField, EmailField, TimeField
 from wtforms.validators import DataRequired, Email
 from flask_login import current_user
 from flask import request, jsonify
@@ -114,6 +114,40 @@ def edit_vehicle(vehicle_id):
             return jsonify(vehicle_form.errors), 400
     return render_template("management/edit_vehicle.html", form=vehicle_form, id=vehicle.id, vehicle=vehicle)
 
+@management_bp.route("/connections", methods=["GET", "POST"])
+def connections():
+    connections = Connection.query.all()
+    return render_template("management/connections.html", connections=connections)
+
+@management_bp.route("/connections/add", methods=["GET", "POST"])
+def add_connection():
+    connection_form = ConnectionForm()
+    if request.method == "POST":
+        if connection_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(connection_form.errors), 400
+    return render_template("management/add_connection.html", form=connection_form)
+
+@management_bp.route("/connections/<int:connection_id>", methods=["GET", "POST"])
+def edit_connection(connection_id):
+    connection = Connection.query.get(connection_id)
+    connection_form = ConnectionForm(obj=connection)
+    if request.method == "POST":
+        if connection_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(connection_form.errors), 400
+    return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection)
+
 class StopForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})
     name = StringField("Stop Name", validators=[DataRequired()])
@@ -142,3 +176,11 @@ class VehicleForm(FlaskForm):
     model = StringField("Model", validators=[DataRequired()])
     specs = StringField("Technical specs", validators=[DataRequired()])
     status = StringField("Vehicle status", validators=[DataRequired()])
+
+class ConnectionForm(FlaskForm):
+    id = IntegerField("ID", render_kw={'readonly': True})
+    time = TimeField("Time", validators=[DataRequired()])
+    direction = StringField("Direction", validators=[DataRequired()])
+    days_of_week = StringField("Days of week", validators=[DataRequired()])
+    vehicle_id = IntegerField("Vehicle id")
+    line_id = IntegerField("Line id", validators=[DataRequired()])

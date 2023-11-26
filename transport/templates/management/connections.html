@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Connections
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('management.add_connection') }}" class="btn btn-outline-secondary">Add</a>
+    {% for connection in connections if connection.deleted != 1 %}
+        <div class="card">
+            <div class="card-body">
+                <div class="group align-right">
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
+                    <h5 class="card-title">{{ connection.time }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ connection.direction }}, {{ connection.days_of_week }}, {{ connection.vehicle_id }}, {{ connection.line_id }}</h6>
+                    <a href="{{ url_for('management.edit_connection', connection_id=connection.id) }}" class="btn btn-outline-secondary">Edit</a>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+{% endblock %}

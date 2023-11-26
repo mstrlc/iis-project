@@ -7,7 +7,7 @@ from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
 from transport.extensions import db
-from transport.models import Stop, Vehicle, Line, LinesStops
+from transport.models import Stop, Vehicle, Line, LinesStops, Connection
 
 management_api_bp = Blueprint("management_api", __name__)
 
@@ -187,5 +187,63 @@ def remove_vehicle():
         res = {
             "status": "success",
             "message": "Removed vehicle successfully",
+        }
+        return make_response(jsonify(res), 200)
+    
+@management_api_bp.route("/add_connection", methods=["POST"])
+def add_connection():
+    req = request.get_json()
+    with current_app.app_context():
+        connection = Connection()
+        time = req.get("time")
+        direction = req.get("direction")
+        days_of_week = req.get("days_of_week")
+        vehicle_id = req.get("vehicle_id")
+        line_id = req.get("line_id")
+        connection.time = time
+        connection.direction = direction
+        connection.days_of_week = days_of_week
+        connection.vehicle_id = vehicle_id
+        connection.line_id = line_id
+        connection.save()
+        res = {
+            "status": "success",
+            "message": "Add connection successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/edit_connection", methods=["POST"])
+def edit_connection():
+    req = request.get_json()
+    with current_app.app_context():
+        connection = Connection.query.get(req.get("id"))
+        connection = Connection()
+        time = req.get("time")
+        direction = req.get("direction")
+        days_of_week = req.get("days_of_week")
+        vehicle_id = req.get("vehicle_id")
+        line_id = req.get("line_id")
+        connection.time = time
+        connection.direction = direction
+        connection.days_of_week = days_of_week
+        connection.vehicle_id = vehicle_id
+        connection.line_id = line_id
+        connection.save()
+        res = {
+            "status": "success",
+            "message": "Edit connection successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/remove_connection", methods=["POST"])
+def remove_connection():
+    req = request.get_json()
+    with current_app.app_context():
+        print(req.get("id"))
+        connection = Connection.query.get(req.get("id"))
+        connection.remove()
+        res = {
+            "status": "success",
+            "message": "Removed connection successfully",
         }
         return make_response(jsonify(res), 200)

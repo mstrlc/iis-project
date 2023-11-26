@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit line
+{% endblock %}
+
+{% block content %}
+<form id="form" method="POST" novalidate><br>
+    <div class="form-group">
+        {{ form.csrf_token }}
+        <input type="hidden" id="id" value="{{ connection.id }}">
+        <label for="time">Time</label><br>
+        {{ form.time(class_="form-control")  }} <br>
+        <label for="direction">Direction</label><br>
+        {{ form.direction(class_="form-control")  }} <br>
+        <label for="days_of_week">Days_of_week</label><br>
+        {{ form.days_of_week(class_="form-control")  }} <br>
+        <label for="vehicle_id">Vehicle ID</label><br>
+        {{ form.vehicle_id(class_="form-control")  }} <br>
+        <label for="line_id">Line ID</label><br>
+        {{ form.line_id(class_="form-control")  }} <br>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+        <button class="btn btn-outline-danger" id="remove">Delete</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                time: document.getElementById('time'),
+                direction: document.getElementById('direction'),
+                days_of_week: document.getElementById('days_of_week'),
+                vehicle_id: document.getElementById('vehicle_id'),
+                line_id: document.getElementById('line_id'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                time: fields.time.value,
+                direction: fields.direction.value,
+                days_of_week: fields.days_of_week.value,
+                vehicle_id: fields.vehicle_id.value,
+                line_id: fields.line_id.value,
+            });
+            // send request to validate form
+            const response = await fetch("{{ url_for('management.add_connection') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.management_api.add_connection') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.connections') }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                // get the error message
+                let alert_message = "";
+                for (const [key, value] of Object.entries(json)) {
+                    alert_message = alert_message + value + "\n";
+                }
+                alert(alert_message);
+            }
+        });
+
+        remove.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                time: document.getElementById('time'),
+                direction: document.getElementById('direction'),
+                days_of_week: document.getElementById('days_of_week'),
+                vehicle_id: document.getElementById('vehicle_id'),
+                line_id: document.getElementById('line_id'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                time: fields.time.value,
+                direction: fields.direction.value,
+                days_of_week: fields.days_of_week.value,
+                vehicle_id: fields.vehicle_id.value,
+                line_id: fields.line_id.value,
+            });
+            const apiresponse = await fetch("{{ url_for('api.management_api.remove_connection') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle API response
+            if(apiresponse.ok) {
+                const json = await apiresponse.json();
+                // redirect to home
+                window.location.href = "{{ url_for('management.connections') }}";
+            } else {
+                // handle API error
+                const json = await apiresponse.json();
+                alert(json.message);
+            }
+        });
+    </script>
+{% endblock %}
