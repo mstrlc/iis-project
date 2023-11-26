@@ -47,7 +47,8 @@ def edit_stop(stop_id):
 @management_bp.route("/lines", methods=["GET", "POST"])
 def lines():
     lines = Line.query.all()
-    return render_template("management/lines.html", lines=lines)
+    stops = Stop.query.all()
+    return render_template("management/lines.html", lines=lines, stops=stops)
 
 @management_bp.route("/lines/add", methods=["GET", "POST"])
 def add_line():
@@ -68,7 +69,7 @@ def edit_line(line_id):
     line = Line.query.get(line_id)
     stops = Stop.query.all()
     line_stops = line.line_stops
-    line_form = LineForm(obj=line)   
+    line_form = LineForm(obj=line)
     if request.method == "POST":
         if line_form.validate():
             res = {
