@@ -1,3 +1,4 @@
+import datetime
 from pyexpat import model
 from flask import Blueprint
 from flask import request
@@ -6,7 +7,7 @@ from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
 from transport.extensions import db
-from transport.models import Stop, Vehicle, Line
+from transport.models import Stop, Vehicle, Line, LinesStops
 
 management_api_bp = Blueprint("management_api", __name__)
 
@@ -102,10 +103,14 @@ def remove_line():
 def add_stop_to_line():
     req = request.get_json()
     with current_app.app_context():
-        line = Line.query.get(req.get("id"))
-        stop = Stop.query.get(req.get("stop_id"))
-        line.line_stops.append(stop)
-        line.save()
+        line_stop = LinesStops()
+        line_stop.line_id = req.get("id")
+        line_stop.stop_id = req.get("stop_id")
+        #TODO
+        line_stop.time_from_start = datetime.datetime.min
+        line_stop.order = 0
+        ########
+        line_stop.save()
         res = {
             "status": "success",
             "message": "Add stop to line successfully",
@@ -116,10 +121,8 @@ def add_stop_to_line():
 def remove_stop_from_line():
     req = request.get_json()
     with current_app.app_context():
-        line = Line.query.get(req.get("id"))
-        stop = Stop.query.get(req.get("stop_id"))
-        line.line_stops.remove(stop)
-        line.save()
+        line_stop = LinesStops.query.filter_by(line_id = req.get("id"),stop_id = req.get("stop_id")).first()
+        line_stop.remove()
         res = {
             "status": "success",
             "message": "Remove stop from line successfully",

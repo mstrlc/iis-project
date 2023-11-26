@@ -19,12 +19,7 @@ import datetime
 from transport.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-lines_stops = db.Table('lines_stops',
-                    Column('line_id', Integer, ForeignKey('lines.id')),
-                    Column('stop_id', Integer, ForeignKey('stops.id')),
-                    Column('time_from_start', Time, nullable=False, default=datetime.datetime.min),
-                    Column('order', Integer, nullable=False, default=0),
-                    )
+
 
 class Base(object):
     def save(self):
@@ -38,7 +33,16 @@ class Base(object):
         db.session.delete(self)
         db.session.commit()
         db.session.expunge_all()
-
+        
+class LinesStops(db.Model, Base):
+    __tablename__='lines_stops'
+    line_id = Column('line_id', Integer, ForeignKey('lines.id'), primary_key=True)
+    stop_id = Column('stop_id', Integer, ForeignKey('stops.id'), primary_key=True)
+    time_from_start = Column('time_from_start', Time, nullable=False, default=datetime.datetime.min)
+    order = Column('order', Integer, nullable=False, default=0)
+    lines = relationship('Line', back_populates = 'line_stops')
+    stops = relationship('Stop', back_populates = 'stop_lines')
+    
 class User(db.Model, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -83,6 +87,7 @@ class Stop(db.Model, Base):
     latitude = Column(String(20), nullable=False)
     longitude = Column(String(20), nullable=False)
     deleted = Column(Boolean, default=False)
+    stop_lines = relationship('LinesStops', back_populates='stops')
 
 
 class Line(db.Model, Base):
@@ -91,7 +96,7 @@ class Line(db.Model, Base):
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
     deleted = Column(Boolean, default=False)
-    line_stops = relationship('Stop', secondary=lines_stops, backref='lines', cascade='all, delete')
+    line_stops = relationship('LinesStops', back_populates='lines')
     
 
 class Vehicle(db.Model, Base):

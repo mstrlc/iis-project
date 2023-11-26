@@ -17,10 +17,13 @@
 
         <h3>Stops</h3>
         <ul>
-            {% for stop in line_stops if stop.deleted != 1 %}
+            {% for lineStop in line_stops if lineStop.line_id == line.id %}
             <div>
+                {% for stop in stops if stop.id == lineStop.stop_id %}
                 <h5 class="card-title">{{ stop.name }}</h5>
                 <a id="remove-stop-{{stop.id}}" class="btn btn-outline-secondary">Remove from line</a>
+                {% endfor %}
+                
             </div>
             <br>
             {% endfor %}
@@ -28,7 +31,7 @@
 
         Add stop
         <select name="stops" id="stops">
-            {% for stop in stops if stop not in line.stops %}
+            {% for stop in stops if stop not in line_stops %}
                 <option value="{{ stop.id }}">{{ stop.name }}</option>
             {% endfor %}
         </select>
