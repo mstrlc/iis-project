@@ -23,7 +23,6 @@
                 <h5 class="card-title">{{ stop.name }}</h5>
                 <a id="remove-stop-{{stop.id}}" class="btn btn-outline-secondary">Remove from line</a>
                 {% endfor %}
-                
             </div>
             <br>
             {% endfor %}
@@ -31,9 +30,14 @@
 
         Add stop
         <select name="stops" id="stops">
-            {% for stop in stops if stop not in line_stops %}
+            {% for stop in stops %}
+            <div>
+                {% if stop.id not in line_stops|map(attribute='stop_id') %}
                 <option value="{{ stop.id }}">{{ stop.name }}</option>
+                {% endif %}
+            </div>
             {% endfor %}
+
         </select>
         <button class="btn btn-outline-secondary" id="add_stop">Add stop</button>
         <br>
