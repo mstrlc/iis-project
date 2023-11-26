@@ -10,10 +10,9 @@
         <div class="card">
             <div class="card-body">
                 <div class="group align-right">
-                    <h6 class="card-subtitle mb-2 text-muted">#{{ line.id }}</h6>
                     <h5 class="card-title">{{ line.name }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                    {% for line_stop in line.line_stops %}
+                    {% for line_stop in line.line_stops|sort(attribute='order') %}
                         {% set outer_loop = loop %}
                         {% for stop in stops if stop.id == line_stop.stop_id %}
                             {% if outer_loop.last %}

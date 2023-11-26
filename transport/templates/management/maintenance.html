@@ -11,7 +11,6 @@
         <div class="card">
             <div class="card-body">
                 <div class="group align-right">
-                    <h6 class="card-subtitle mb-2 text-muted">#{{ maintenance_record.id }}</h6>
                     <h6 class="card-text">{{ maintenance_record.date }}</h6>
                     {% for vehicle in vehicles %}
                         {% if vehicle.id == maintenance_record.vehicle_id %}

@@ -106,6 +106,11 @@ def add_stop_to_line():
         line_stop = LinesStops()
         line_stop.line_id = req.get("id")
         line_stop.stop_id = req.get("stop_id")
+        last_stop = LinesStops.query.filter_by(line_id = req.get("id")).order_by(LinesStops.order.desc()).first()
+        if last_stop:
+            line_stop.order = last_stop.order + 1
+        else:
+            line_stop.order = 1
         line_stop.save()
         res = {
             "status": "success",
@@ -118,10 +123,37 @@ def remove_stop_from_line():
     req = request.get_json()
     with current_app.app_context():
         line_stop = LinesStops.query.filter_by(line_id = req.get("id"),stop_id = req.get("stop_id")).first()
+        # get all stops with order higher than the one we are removing
+        stops = LinesStops.query.filter_by(line_id = req.get("id")).filter(LinesStops.order > line_stop.order).all()
+        for stop in stops:
+            stop.order = stop.order - 1
+            stop.save()
         line_stop.remove()
         res = {
             "status": "success",
             "message": "Remove stop from line successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/move_stop_in_line", methods=["POST"])
+def move_stop_in_line():
+    req = request.get_json()
+    with current_app.app_context():
+        line_stop = LinesStops.query.filter_by(line_id = req.get("id"),stop_id = req.get("stop_id")).first()
+        direction = req.get("direction")
+        if direction == "minus":
+            swapped_stop = LinesStops.query.filter_by(line_id = req.get("id"),order = line_stop.order - 1).first()
+            swapped_stop.order = swapped_stop.order + 1
+            line_stop.order = line_stop.order - 1
+        else: # direction == "plus"
+            swapped_stop = LinesStops.query.filter_by(line_id = req.get("id"),order = line_stop.order + 1).first()
+            swapped_stop.order = swapped_stop.order - 1
+            line_stop.order = line_stop.order + 1
+        swapped_stop.save()
+        line_stop.save()
+        res = {
+            "status": "success",
+            "message": "Move stop in line successfully",
         }
         return make_response(jsonify(res), 200)
 

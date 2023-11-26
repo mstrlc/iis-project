@@ -17,11 +17,18 @@
 
         <h3>Stops</h3>
         <ul>
-            {% for lineStop in line_stops if lineStop.line_id == line.id %}
+            {% for lineStop in line_stops|sort(attribute='order') if lineStop.line_id == line.id %}
+            {% set outer_loop = loop %}
             <div>
                 {% for stop in stops if stop.id == lineStop.stop_id %}
-                <h5 class="card-title">{{ stop.name }}</h5>
-                <a id="remove-stop-{{stop.id}}" class="btn btn-outline-secondary">Remove from line</a>
+                <h5 class="card-title">{{ lineStop.order }}. {{ stop.name }}</h5>
+                {% if not outer_loop.first %}
+                    <a id="minus-stop-{{stop.id}}" class="btn btn-outline-secondary">↑</a>
+                {% endif %}
+                {% if not outer_loop.last %}
+                    <a id="plus-stop-{{stop.id}}" class="btn btn-outline-secondary">↓</a>
+                {% endif %}
+                <a id="remove-stop-{{stop.id}}" class="btn btn-outline-danger">✕</a>
                 {% endfor %}
             </div>
             <br>
@@ -50,6 +57,7 @@
         const form = document.getElementById("form");
         const add_stop = document.getElementById("add_stop");
         const remove_buttons = document.querySelectorAll('[id^="remove-stop-"]');
+        const order_buttons = document.querySelectorAll('[id^="plus-stop-"], [id^="minus-stop-"]');
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -181,6 +189,40 @@
                     stop_id: button.id.split("-")[2],
                 });
                 const apiresponse = await fetch("{{ url_for('api.management_api.remove_stop_from_line') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.edit_line', line_id=line.id) }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            });
+        });
+
+        order_buttons.forEach((button) => {
+            button.addEventListener("click", async (e) => {
+                e.preventDefault();
+                const fields = {
+                    csrf_token: document.getElementById('csrf_token'),
+                    id: document.getElementById('id'),
+                };
+                // jsonify input
+                const data = JSON.stringify({
+                    csrf_token: fields.csrf_token.value,
+                    id: fields.id.value,
+                    direction: button.id.split("-")[0],
+                    stop_id: button.id.split("-")[2],
+                });
+                const apiresponse = await fetch("{{ url_for('api.management_api.move_stop_in_line') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
