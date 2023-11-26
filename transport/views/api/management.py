@@ -51,7 +51,7 @@ def edit_stop():
 def remove_stop():
     req = request.get_json()
     with current_app.app_context():
-        stop = Stop.query.query.get(req.get("id"))
+        stop = Stop.query.filter_by(id = req.get("id")).first()
         stop.remove()
         res = {
             "status": "success",

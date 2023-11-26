@@ -31,10 +31,7 @@ def create_app():
         
         #models_changed(app)
         db.create_all()
-        insert_sample_lines()
-        insert_sample_stops()
-        insert_sample_vehicles()
-        insert_sample_users()
+        
 
         db.session.commit()
         db.session.expunge_all()
@@ -57,6 +54,11 @@ def create_app():
 def models_changed(app):
     with app.app_context():
         db.drop_all()
+        db.create_all()
+        insert_sample_lines()
+        insert_sample_stops()
+        insert_sample_vehicles()
+        insert_sample_users()
 
 
 @login_manager.user_loader
