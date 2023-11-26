@@ -1,0 +1,82 @@
+a{% extends 'base.html' %}
+
+{% block title %}
+    Add maintenance
+{% endblock %}
+
+{% block content %}
+<form id="form" method="POST" novalidate><br>
+    <div class="form-group">
+        {{ form.csrf_token }}
+        <label for="date">Date</label><br>
+        {{ form.date(class_="form-control", type="datetime-local")  }} <br>
+        <label for="description">Description</label><br>
+        {{ form.description(class_="form-control")  }} <br>
+        <label for="vehicle_id">Vehicle</label><br>
+        <select name="vehicle_id" id="vehicle_id">
+            {% for vehicle in vehicles %}
+                <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                date: document.getElementById('date'),
+                description: document.getElementById('description'),
+                vehicle_id: document.getElementById('vehicle_id'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                date: fields.date.value,
+                description: fields.description.value,
+                vehicle_id: fields.vehicle_id.value,
+            });
+            // send request to validate form
+            const response = await fetch("{{ url_for('management.add_maintenance') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.management_api.add_maintenance') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.maintenance') }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                // get the error message
+                let alert_message = "";
+                for (const [key, value] of Object.entries(json)) {
+                    alert_message = alert_message + value + "\n";
+                }
+                alert(alert_message);
+            }
+        });
+    </script>
+{% endblock %}

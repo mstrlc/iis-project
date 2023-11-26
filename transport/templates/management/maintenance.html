@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Maintenance
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('management.add_maintenance') }}" class="btn btn-outline-secondary">Add record</a>
+    {% for maintenance_record in maintenance %}
+        <div class="card">
+            <div class="card-body">
+                <div class="group align-right">
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ maintenance_record.id }}</h6>
+                    <h6 class="card-text">{{ maintenance_record.date }}</h6>
+                    {% for vehicle in vehicles %}
+                        {% if vehicle.id == maintenance_record.vehicle_id %}
+                            <h5 class="card-title">{{ vehicle.name }}</h5>
+                        {% endif %}
+                    {% endfor %}
+                    <h6 class="card-text">{{ maintenance_record.description }}</h6>
+                    <a href="{{ url_for('management.edit_maintenance', maintenance_id=maintenance_record.id) }}" class="btn btn-outline-secondary">Edit</a>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+{% endblock %}

@@ -7,7 +7,7 @@ from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
 from transport.extensions import db
-from transport.models import Stop, Vehicle, Line, LinesStops, Connection
+from transport.models import Stop, Vehicle, Line, LinesStops, Connection, Maintenance
 
 management_api_bp = Blueprint("management_api", __name__)
 
@@ -185,7 +185,7 @@ def remove_vehicle():
             "message": "Removed vehicle successfully",
         }
         return make_response(jsonify(res), 200)
-    
+
 @management_api_bp.route("/add_connection", methods=["POST"])
 def add_connection():
     req = request.get_json()
@@ -241,5 +241,53 @@ def remove_connection():
         res = {
             "status": "success",
             "message": "Removed connection successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/add_maintenance", methods=["POST"])
+def add_maintenance():
+    req = request.get_json()
+    with current_app.app_context():
+        maintenance = Maintenance()
+        vehicle_id = req.get("vehicle_id")
+        description = req.get("description")
+        date = req.get("date")
+        maintenance.vehicle_id = vehicle_id
+        maintenance.date = date
+        maintenance.description = description
+        maintenance.save()
+        res = {
+            "status": "success",
+            "message": "Add maintenance successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/edit_maintenance", methods=["POST"])
+def edit_maintenance():
+    req = request.get_json()
+    with current_app.app_context():
+        maintenance = Maintenance.query.get(req.get("id"))
+        vehicle_id = req.get("vehicle_id")
+        description = req.get("description")
+        date = req.get("date")
+        maintenance.vehicle_id = vehicle_id
+        maintenance.date = date
+        maintenance.description = description
+        maintenance.save()
+        res = {
+            "status": "success",
+            "message": "Edit maintenance successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/remove_maintenance", methods=["POST"])
+def remove_maintenance():
+    req = request.get_json()
+    with current_app.app_context():
+        maintenance = Maintenance.query.get(req.get("id"))
+        maintenance.remove()
+        res = {
+            "status": "success",
+            "message": "Removed maintenance successfully",
         }
         return make_response(jsonify(res), 200)

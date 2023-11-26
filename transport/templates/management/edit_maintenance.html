@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit maintenance
+{% endblock %}
+
+{% block content %}
+<form id="form" method="POST" novalidate><br>
+    <div class="form-group">
+        {{ form.csrf_token }}
+        <input type="hidden" id="id" value="{{ maintenance.id }}">
+        <label for="date">Date</label><br>
+        {{ form.date(class_="form-control", type="datetime-local")  }} <br>
+        <label for="description">Description</label><br>
+        {{ form.description(class_="form-control")  }} <br>
+        <label for="vehicle_id">Vehicle</label><br>
+        <select name="vehicle_id" id="vehicle_id">
+            {% for vehicle in vehicles %}
+                {% if vehicle.id == maintenance.vehicle_id %}
+                <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
+                {% else %}
+                <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+        <button class="btn btn-outline-danger" id="remove">Delete</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+                date: document.getElementById('date'),
+                description: document.getElementById('description'),
+                vehicle_id: document.getElementById('vehicle_id'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+                date: fields.date.value,
+                description: fields.description.value,
+                vehicle_id: fields.vehicle_id.value,
+            });
+            // send request to validate form
+            const response = await fetch("{{ url_for('management.edit_maintenance', maintenance_id=maintenance.id) }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle response
+            if(response.ok) {
+                const apiresponse = await fetch("{{ url_for('api.management_api.edit_maintenance') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+                // handle API response
+                if(apiresponse.ok) {
+                    const json = await apiresponse.json();
+                    // redirect to home
+                    window.location.href = "{{ url_for('management.maintenance') }}";
+                } else {
+                    // handle API error
+                    const json = await apiresponse.json();
+                    alert(json.message);
+                }
+            } else {
+                // handle error
+                const json = await response.json();
+                // get the error message
+                let alert_message = "";
+                for (const [key, value] of Object.entries(json)) {
+                    alert_message = alert_message + value + "\n";
+                }
+                alert(alert_message);
+            }
+        });
+
+        remove.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const fields = {
+                csrf_token: document.getElementById('csrf_token'),
+                id: document.getElementById('id'),
+            };
+            // jsonify input
+            const data = JSON.stringify({
+                csrf_token: fields.csrf_token.value,
+                id: fields.id.value,
+            });
+            const apiresponse = await fetch("{{ url_for('api.management_api.remove_maintenance') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: data
+            });
+            // handle API response
+            if(apiresponse.ok) {
+                const json = await apiresponse.json();
+                // redirect to home
+                window.location.href = "{{ url_for('management.maintenance') }}";
+            } else {
+                // handle API error
+                const json = await apiresponse.json();
+                alert(json.message);
+            }
+        });
+    </script>
+{% endblock %}

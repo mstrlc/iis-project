@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
-from transport.models import Stop, Vehicle, Line, LinesStops, Connection
+from transport.models import Stop, Vehicle, Line, LinesStops, Connection, Maintenance
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, EmailField, TimeField
+from wtforms import StringField, IntegerField, EmailField, TimeField, DateTimeLocalField
 from wtforms.validators import DataRequired, Email
 from flask_login import current_user
 from flask import request, jsonify
@@ -149,6 +149,44 @@ def edit_connection(connection_id):
             return jsonify(connection_form.errors), 400
     return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection)
 
+@management_bp.route("/maintenance", methods=["GET", "POST"])
+def maintenance():
+    maintenance = Maintenance.query.all()
+    vehicles = Vehicle.query.all()
+    return render_template("management/maintenance.html", maintenance=maintenance, vehicles=vehicles)
+
+@management_bp.route("/maintenance/add", methods=["GET", "POST"])
+def add_maintenance():
+    vehicles = Vehicle.query.all()
+    maintenance_form = MaintenanceForm()
+    if request.method == "POST":
+        if maintenance_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(maintenance_form.errors), 400
+    return render_template("management/add_maintenance.html", form=maintenance_form, vehicles=vehicles)
+
+@management_bp.route("/maintenance/<int:maintenance_id>", methods=["GET", "POST"])
+def edit_maintenance(maintenance_id):
+    maintenance = Maintenance.query.get(maintenance_id)
+    maintenance_form = MaintenanceForm(obj=maintenance)
+    vehicles = Vehicle.query.all()
+    if request.method == "POST":
+        if maintenance_form.validate():
+            res = {
+                "status": "success",
+                "message": "Form valid"
+            }
+            return jsonify(res), 200
+        else:
+            return jsonify(maintenance_form.errors), 400
+    return render_template("management/edit_maintenance.html", form=maintenance_form, id=maintenance.id, maintenance=maintenance, vehicles=vehicles)
+
+
 class StopForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})
     name = StringField("Stop Name", validators=[DataRequired()])
@@ -185,3 +223,9 @@ class ConnectionForm(FlaskForm):
     days_of_week = StringField("Days of week", validators=[DataRequired()])
     vehicle_id = IntegerField("Vehicle id")
     line_id = IntegerField("Line id", validators=[DataRequired()])
+
+class MaintenanceForm(FlaskForm):
+    id = IntegerField("ID", render_kw={'readonly': True})
+    date = DateTimeLocalField("Date", validators=[DataRequired()])
+    description = StringField("Description", validators=[DataRequired()])
+    vehicle_id = IntegerField("Vehicle id", validators=[DataRequired()])
