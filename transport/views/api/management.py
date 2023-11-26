@@ -106,10 +106,6 @@ def add_stop_to_line():
         line_stop = LinesStops()
         line_stop.line_id = req.get("id")
         line_stop.stop_id = req.get("stop_id")
-        #TODO
-        line_stop.time_from_start = datetime.datetime.min
-        line_stop.order = 0
-        ########
         line_stop.save()
         res = {
             "status": "success",

@@ -19,8 +19,6 @@ import datetime
 from transport.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
-
 class Base(object):
     def save(self):
         db.session.expunge_all()
@@ -36,10 +34,10 @@ class Base(object):
         
 class LinesStops(db.Model, Base):
     __tablename__='lines_stops'
-    line_id = Column('line_id', Integer, ForeignKey('lines.id'), primary_key=True)
-    stop_id = Column('stop_id', Integer, ForeignKey('stops.id'), primary_key=True)
-    time_from_start = Column('time_from_start', Time, nullable=False, default=datetime.datetime.min)
-    order = Column('order', Integer, nullable=False, default=0)
+    line_id = Column('line_id', Integer, ForeignKey('lines.id'))
+    stop_id = Column('stop_id', Integer, ForeignKey('stops.id'))
+    time_from_start = Column('time_from_start', Time, nullable=False, default=0)
+    order = Column('order',Integer, primary_key=True, autoincrement=True  )
     lines = relationship('Line', back_populates = 'line_stops')
     stops = relationship('Stop', back_populates = 'stop_lines')
     
