@@ -8,6 +8,7 @@ a{% extends 'base.html' %}
 <form id="form" method="POST" novalidate><br>
     <div class="form-group">
         {{ form.csrf_token }}
+        <input type="hidden" id="for_vehicle" value="{{ for_vehicle }}
         <label for="date">Date</label><br>
         {{ form.date(class_="form-control", type="datetime-local")  }} <br>
         <label for="description">Description</label><br>
@@ -15,7 +16,11 @@ a{% extends 'base.html' %}
         <label for="vehicle_id">Vehicle</label><br>
         <select name="vehicle_id" id="vehicle_id">
             {% for vehicle in vehicles %}
+                {% if vehicle == for_vehicle %}
+                <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
+                {% else %}
                 <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
+                {% endif %}
             {% endfor %}
         </select>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
@@ -25,6 +30,8 @@ a{% extends 'base.html' %}
 
 {% block js %}
     <script>
+        const for_vehicle = document.getElementById('for_vehicle').value;
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
             const fields = {
@@ -61,7 +68,11 @@ a{% extends 'base.html' %}
                 if(apiresponse.ok) {
                     const json = await apiresponse.json();
                     // redirect to home
-                    window.location.href = "{{ url_for('management.maintenance') }}";
+                    if(for_vehicle) {
+                        window.location.href = "{{ url_for('management.vehicles' ) }}";
+                    } else {
+                        window.location.href = "{{ url_for('management.maintenance') }}";
+                    }
                 } else {
                     // handle API error
                     const json = await apiresponse.json();

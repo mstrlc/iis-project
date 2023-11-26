@@ -19,6 +19,7 @@
                     {% endif %}
                     <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.type }}, {{ vehicle.make }}, {{ vehicle.model }}, {{ vehicle.specs }}, {{ vehicle.status }}</h6>
                     <a href="{{ url_for('management.edit_vehicle', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Edit</a>
+                    <a href="{{ url_for('management.add_maintenance', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Maintain</a>
                 </div>
             </div>
         </div>

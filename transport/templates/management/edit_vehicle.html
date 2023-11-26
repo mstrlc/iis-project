@@ -135,5 +135,9 @@
                 alert(json.message);
             }
         });
+
+        maintain.addEventListener("click", async (e) => {
+            e.preventDefault();
+            window.location.href = "{{ url_for('management.add_maintenance', vehicle_id=vehicle.id) }}" });
     </script>
 {% endblock %}

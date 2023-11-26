@@ -7,6 +7,7 @@ from flask_login import current_user
 from flask import request, jsonify
 from wtforms import ValidationError
 import re
+import datetime
 
 management_bp = Blueprint("management", __name__)
 
@@ -156,8 +157,13 @@ def maintenance():
     return render_template("management/maintenance.html", maintenance=maintenance, vehicles=vehicles)
 
 @management_bp.route("/maintenance/add", methods=["GET", "POST"])
-def add_maintenance():
+@management_bp.route("/maintenance/add/<int:vehicle_id>", methods=["GET", "POST"])
+def add_maintenance(vehicle_id=None):
     vehicles = Vehicle.query.all()
+    if vehicle_id:
+        for_vehicle = Vehicle.query.get(vehicle_id)
+    else:
+        for_vehicle = None
     maintenance_form = MaintenanceForm()
     if request.method == "POST":
         if maintenance_form.validate():
@@ -168,7 +174,7 @@ def add_maintenance():
             return jsonify(res), 200
         else:
             return jsonify(maintenance_form.errors), 400
-    return render_template("management/add_maintenance.html", form=maintenance_form, vehicles=vehicles)
+    return render_template("management/add_maintenance.html", form=maintenance_form, vehicles=vehicles, for_vehicle=for_vehicle)
 
 @management_bp.route("/maintenance/<int:maintenance_id>", methods=["GET", "POST"])
 def edit_maintenance(maintenance_id):
@@ -226,6 +232,6 @@ class ConnectionForm(FlaskForm):
 
 class MaintenanceForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})
-    date = DateTimeLocalField("Date", validators=[DataRequired()])
+    date = DateTimeLocalField("Date", validators=[DataRequired()], default=datetime.datetime.now)
     description = StringField("Description", validators=[DataRequired()])
     vehicle_id = IntegerField("Vehicle id", validators=[DataRequired()])
