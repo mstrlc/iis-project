@@ -8,23 +8,40 @@
     </style>
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('home.index') }}">Home</a>
-        <a href="{{ url_for('administration.users') }}">Users</a>
-        <a href="{{ url_for('management.stops') }}">Stops</a>
-        <a href="{{ url_for('management.lines') }}">Lines</a>
-        <a href="{{ url_for('management.vehicles') }}">Vehicles</a>
-        <a href="{{ url_for('management.maintenance') }}">Maintenance</a>
-        <a href="{{ url_for('management.connections') }}">Connections</a>
-        {% if current_user.is_authenticated %}
-            <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} – {{ current_user.email }} </p>
-            <button id="logout" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
-        {% else %}
-            <p>Not logged in</p>
-            <a href="{{ url_for('authentication.login') }}" class="btn">Login</a>
-            <a href="{{ url_for('authentication.register') }}" class="btn">Register</a>
-            {% endif %}
-    </nav>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Transport</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ url_for('administration.users') }}">Users</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ url_for('management.stops') }}">Stops</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ url_for('management.lines') }}">Lines</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ url_for('management.vehicles') }}">Vehicles</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ url_for('management.maintenance') }}">Maintenance</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <p>User {{ current_user.email }} </p>
+                    <button id="logout" class="btn btn-outline-secondary" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
+                {% else %}
+                <p>Not logged in</p>
+                    <a href="{{ url_for('authentication.login') }}" class="btn btn-outline-secondary">Login</a>
+                    <a href="{{ url_for('authentication.register') }}" class="btn btn-outline-secondary">Register</a>
+                {% endif %}
+            </ul>
+      </nav>
     <hr>
     <div class="content">
         <div class="container">
