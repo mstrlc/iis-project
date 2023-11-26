@@ -10,11 +10,12 @@
 <body>
     <nav>
         <a href="{{ url_for('home.index') }}">Home</a>
-        <a href="{{ url_for('management.connections') }}">Connections</a>
-        <a href="{{ url_for('administration.users') }}">Administration</a>
+        <a href="{{ url_for('administration.users') }}">Users</a>
         <a href="{{ url_for('management.stops') }}">Stops</a>
         <a href="{{ url_for('management.lines') }}">Lines</a>
         <a href="{{ url_for('management.vehicles') }}">Vehicles</a>
+        <a href="{{ url_for('management.maintenance') }}">Maintenance</a>
+        <a href="{{ url_for('management.connections') }}">Connections</a>
         {% if current_user.is_authenticated %}
             <p>Logged in as {{ current_user.firstname }} {{ current_user.lastname }} – {{ current_user.email }} </p>
             <button id="logout" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
