@@ -109,8 +109,10 @@ def add_stop_to_line():
         last_stop = LinesStops.query.filter_by(line_id = req.get("id")).order_by(LinesStops.order.desc()).first()
         if last_stop:
             line_stop.order = last_stop.order + 1
+            line_stop.time_from_start = last_stop.time_from_start
         else:
             line_stop.order = 1
+            line_stop.time_from_start = 0
         line_stop.save()
         res = {
             "status": "success",
@@ -149,11 +151,27 @@ def move_stop_in_line():
             swapped_stop = LinesStops.query.filter_by(line_id = req.get("id"),order = line_stop.order + 1).first()
             swapped_stop.order = swapped_stop.order - 1
             line_stop.order = line_stop.order + 1
+        tmp = swapped_stop.time_from_start
+        swapped_stop.time_from_start = line_stop.time_from_start
+        line_stop.time_from_start = tmp
         swapped_stop.save()
         line_stop.save()
         res = {
             "status": "success",
             "message": "Move stop in line successfully",
+        }
+        return make_response(jsonify(res), 200)
+
+@management_api_bp.route("/update_time_from_start", methods=["POST"])
+def update_time_from_start():
+    req = request.get_json()
+    with current_app.app_context():
+        line_stop = LinesStops.query.filter_by(line_id = req.get("id"),stop_id = req.get("stop_id")).first()
+        line_stop.time_from_start = req.get("time_from_start")
+        line_stop.save()
+        res = {
+            "status": "success",
+            "message": "Update time from start successfully",
         }
         return make_response(jsonify(res), 200)
 

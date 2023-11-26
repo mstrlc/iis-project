@@ -12,8 +12,6 @@
         <label for="name">Name</label><br>
         {{ form.name(class_="form-control")  }} <br>
 
-        <button class="btn btn-outline-secondary" type="submit">Save</button>
-        <button class="btn btn-outline-danger" id="remove">Delete</button>
 
         <h3>Stops</h3>
         <ul>
@@ -22,11 +20,13 @@
             <div>
                 {% for stop in stops if stop.id == lineStop.stop_id %}
                 <h5 class="card-title">{{ lineStop.order }}. {{ stop.name }}</h5>
+                <label for="time_from_start">Minutes from start</label><br>
+                <input type="number" id="time_from_start-{{stop.id}}" value="{{ lineStop.time_from_start }}"/>
                 {% if not outer_loop.first %}
-                    <a id="minus-stop-{{stop.id}}" class="btn btn-outline-secondary">↑</a>
+                <a id="minus-stop-{{stop.id}}" class="btn btn-outline-secondary">↑</a>
                 {% endif %}
                 {% if not outer_loop.last %}
-                    <a id="plus-stop-{{stop.id}}" class="btn btn-outline-secondary">↓</a>
+                <a id="plus-stop-{{stop.id}}" class="btn btn-outline-secondary">↓</a>
                 {% endif %}
                 <a id="remove-stop-{{stop.id}}" class="btn btn-outline-danger">✕</a>
                 {% endfor %}
@@ -47,7 +47,10 @@
 
         </select>
         <button class="btn btn-outline-secondary" id="add_stop">Add stop</button>
+
         <br>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+        <button class="btn btn-outline-danger" id="remove">Delete</button>
     </div>
 </form>
 {% endblock %}
@@ -58,9 +61,39 @@
         const add_stop = document.getElementById("add_stop");
         const remove_buttons = document.querySelectorAll('[id^="remove-stop-"]');
         const order_buttons = document.querySelectorAll('[id^="plus-stop-"], [id^="minus-stop-"]');
+        const time_from_start_inputs = document.querySelectorAll('[id^="time_from_start-"]');
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+
+            time_from_start_inputs.forEach((input) => {
+                let value = input.value;
+                let stop_id = input.id.split("-")[1];
+
+                const fields = {
+                    csrf_token: document.getElementById('csrf_token'),
+                    id: document.getElementById('id'),
+                    stop_id: stop_id,
+                    time_from_start: value,
+                };
+                // jsonify input
+                const data = JSON.stringify({
+                    csrf_token: fields.csrf_token.value,
+                    id: fields.id.value,
+                    stop_id: fields.stop_id,
+                    time_from_start: fields.time_from_start,
+                });
+                // send request to api
+                const apiresponse = fetch("{{ url_for('api.management_api.update_time_from_start') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+
+            });
+
             const fields = {
                 csrf_token: document.getElementById('csrf_token'),
                 id: document.getElementById('id'),

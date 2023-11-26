@@ -31,16 +31,16 @@ class Base(object):
         db.session.delete(self)
         db.session.commit()
         db.session.expunge_all()
-        
+
 class LinesStops(db.Model, Base):
     __tablename__='lines_stops'
     line_id = Column('line_id', Integer, ForeignKey('lines.id'), primary_key=True)
     stop_id = Column('stop_id', Integer, ForeignKey('stops.id'), primary_key=True)
-    time_from_start = Column('time_from_start', Time, nullable=False, default=0)
+    time_from_start = Column('time_from_start', Integer, nullable=False, default=0)
     order = Column('order',Integer, nullable=False, default=0)
     lines = relationship('Line', back_populates = 'line_stops')
     stops = relationship('Stop', back_populates = 'stop_lines')
-    
+
 class User(db.Model, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -95,7 +95,7 @@ class Line(db.Model, Base):
     connections = relationship('Connection', backref='lines')
     deleted = Column(Boolean, default=False)
     line_stops = relationship('LinesStops', back_populates='lines')
-    
+
 
 class Vehicle(db.Model, Base):
     __tablename__='vehicles'
@@ -128,4 +128,4 @@ class Maintenance(db.Model, Base):
     description = Column(Text(2048), nullable=False)
     deleted = Column(Boolean, default=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
-    
+
