@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="group align-right">
-                    <<h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
                     <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}, Vehicle: {{ connection.vehicle_id }}</h6>
                     <a href="{{ url_for('management.edit_connection', connection_id=connection.id) }}" class="btn btn-outline-secondary">Edit</a>

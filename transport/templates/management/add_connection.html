@@ -14,10 +14,26 @@
         {{ form.direction(class_="form-control")  }} <br>
         <label for="days_of_week">Days_of_week</label><br>
         {{ form.days_of_week(class_="form-control")  }} <br>
-        <label for="vehicle_id">Vehicle ID</label><br>
-        {{ form.vehicle_id(class_="form-control")  }} <br>
-        <label for="line_id">Line ID</label><br>
-        {{ form.line_id(class_="form-control")  }} <br>
+        <label for="vehicle_id">Vehicle</label><br>
+        <select name="vehicle_id" id="vehicle_id">
+            {% for vehicle in vehicles %}
+                {% if vehicle == for_vehicle %}
+                <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
+                {% else %}
+                <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select><br>
+        <label for="line_id">Line</label><br>
+        <select name="line_id" id="line_id">
+            {% for line in lines %}
+                {% if line == for_line %}
+                <option value="{{ line.id }}" selected>{{ line.name }}</option>
+                {% else %}
+                <option value="{{ line.id }}">{{ line.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select><br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
     </div>
 </form>
