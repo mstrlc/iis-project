@@ -245,12 +245,12 @@ class StopForm(FlaskForm):
 
     def validate_latitude(self, latitude):
         # 49.2277139N
-        if not re.match(r"^\d+\.\d+[NS]$", latitude.data):
+        if not re.match(r"^\d+\.\d+[NSEW]$", latitude.data):
             raise ValidationError("Invalid latitude format, should be WGS84 (degrees)")
 
     def validate_longitude(self, longitude):
         # 123.0074463W
-        if not re.match(r"^\d+\.\d+[EW]$", longitude.data):
+        if not re.match(r"^\d+\.\d+[NSEW]$", longitude.data):
             raise ValidationError("Invalid longitude format, should be WGS84 (degrees)")
 
 class LineForm(FlaskForm):
