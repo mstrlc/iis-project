@@ -13,10 +13,12 @@
             <div class="card-body">
                 <div class="group align-right">
                     <h5 class="card-title">{{ vehicle.name }}</h5>
-                    {% if vehicle.status == "good" %}
-                        <h6 class="card-subtitle mb-2 text-success">✓ Good</h6>
+                    {% if vehicle.status == "available" %}
+                        <h6 class="card-subtitle mb-2 text-success">✓ Available</h6>
+                    {% elif vehicle.status == "maintenance" %}
+                        <h6 class="card-subtitle mb-2 text-warning">! Needs maintenance</h6>
                     {% else %}
-                        <h6 class="card-subtitle mb-2 text-danger">! Needs maintenance</h6>
+                        <h6 class="card-subtitle mb-2 text-danger">✗ Unavailable</h6>
                     {% endif %}
                     <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.type }}, {{ vehicle.make }}, {{ vehicle.model }}, {{ vehicle.specs }}, {{ vehicle.status }}</h6>
                     {% if current_user.roles[0].name in ['manager','admin']  %}
