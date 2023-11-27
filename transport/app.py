@@ -20,7 +20,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
     # if you changed models, set this to True
     app.config["MODELS_CHANGED"] = False 
-    # if you want to insert sample data, set this to True
+    # if you want to insert sample data, set this to True   
     app.config["SAMPLE_DATA"] = True
     app.config["SESSION_COOKIE_SECURE"] = False
 
@@ -32,7 +32,7 @@ def create_app():
     db.init_app(app)
     with app.app_context():
 
-        if app.config["SAMPLE_DATA"] == "True":
+        if app.config["SAMPLE_DATA"] == True:
             models_changed(app)
         db.create_all()
 
@@ -56,7 +56,7 @@ def create_app():
 
 def models_changed(app):
     with app.app_context():
-        if app.config["MODELS_CHANGED"] == "True":
+        if app.config["MODELS_CHANGED"] == True:
             db.drop_all()
         db.create_all()
         sd.insert_sample_lines()
