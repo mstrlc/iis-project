@@ -53,12 +53,16 @@ def edit_stop(stop_id):
     return render_template("management/edit_stop.html", form=stop_form, id=stop.id, stop=stop)
 
 @management_bp.route("/lines", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def lines():
     lines = Line.query.all()
     stops = Stop.query.all()
     return render_template("management/lines.html", lines=lines, stops=stops)
 
 @management_bp.route("/lines/add", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def add_line():
     line_form = LineForm()
     if request.method == "POST":
@@ -73,6 +77,8 @@ def add_line():
     return render_template("management/add_line.html", form=line_form)
 
 @management_bp.route("/lines/<int:line_id>", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def edit_line(line_id):
     line = Line.query.get(line_id)
     stops = Stop.query.all()
@@ -90,11 +96,15 @@ def edit_line(line_id):
     return render_template("management/edit_line.html", form=line_form, id=line.id, line=line, stops=stops, line_stops=line_stops)
 
 @management_bp.route("/vehicles", methods=["GET", "POST"])
+@login_required
+@roles_required(['technician','manager', 'admin'])
 def vehicles():
     vehicles = Vehicle.query.all()
     return render_template("management/vehicles.html", vehicles=vehicles)
 
 @management_bp.route("/vehicles/add", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def add_vehicle():
     vehicle_form = VehicleForm()
     if request.method == "POST":
@@ -109,6 +119,8 @@ def add_vehicle():
     return render_template("management/add_vehicle.html", form=vehicle_form)
 
 @management_bp.route("/vehicles/<int:vehicle_id>", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def edit_vehicle(vehicle_id):
     vehicle = Vehicle.query.get(vehicle_id)
     vehicle_form = VehicleForm(obj=vehicle)
@@ -124,6 +136,8 @@ def edit_vehicle(vehicle_id):
     return render_template("management/edit_vehicle.html", form=vehicle_form, id=vehicle.id, vehicle=vehicle)
 
 @management_bp.route("/connections", methods=["GET", "POST"])
+@login_required
+@roles_required(['driver', 'dispatcher', 'manager', 'admin'])
 def connections():
     connections = Connection.query.all()
     vehicles = Vehicle.query.all()
@@ -131,6 +145,8 @@ def connections():
     return render_template("management/connections.html", connections=connections, vehicles = vehicles, lines = lines)
 
 @management_bp.route("/connections/add", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def add_connection():
     connection_form = ConnectionForm()
     vehicles = Vehicle.query.all()
@@ -147,6 +163,8 @@ def add_connection():
     return render_template("management/add_connection.html", form=connection_form, vehicles = vehicles, lines = lines)
 
 @management_bp.route("/connections/<int:connection_id>", methods=["GET", "POST"])
+@login_required
+@roles_required(['dispatcher','manager', 'admin'])
 def edit_connection(connection_id):
     connection = Connection.query.get(connection_id)
     vehicles = Vehicle.query.all()
@@ -166,6 +184,8 @@ def edit_connection(connection_id):
     return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime)
 
 @management_bp.route("/maintenance", methods=["GET", "POST"])
+@login_required
+@roles_required(['technician','manager', 'admin'])
 def maintenance():
     maintenance = Maintenance.query.all()
     vehicles = Vehicle.query.all()
@@ -173,6 +193,8 @@ def maintenance():
 
 @management_bp.route("/maintenance/add", methods=["GET", "POST"])
 @management_bp.route("/maintenance/add/<int:vehicle_id>", methods=["GET", "POST"])
+@login_required
+@roles_required(['technician', 'admin'])
 def add_maintenance(vehicle_id=None):
     vehicles = Vehicle.query.all()
     if vehicle_id:
@@ -192,6 +214,8 @@ def add_maintenance(vehicle_id=None):
     return render_template("management/add_maintenance.html", form=maintenance_form, vehicles=vehicles, for_vehicle=for_vehicle)
 
 @management_bp.route("/maintenance/<int:maintenance_id>", methods=["GET", "POST"])
+@login_required
+@roles_required(['technician', 'admin'])
 def edit_maintenance(maintenance_id):
     maintenance = Maintenance.query.get(maintenance_id)
     maintenance_form = MaintenanceForm(obj=maintenance)
