@@ -25,9 +25,10 @@
         {{ form.specs(class_="form-control") }} <br>
         <label for="status">status</label><br>
         <select id="status">
-        {% for value in ['good', 'maintenance'] %}
+        {% for value in ['available', 'maintenance', 'requested', 'unavailable'] %}
             <option value="{{value}}">{{value}}</option>
         {% endfor %}
+        </select>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
     </div>
 </form>

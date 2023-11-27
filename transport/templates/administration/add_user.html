@@ -8,7 +8,6 @@
 <form id="form" method="POST" novalidate><br>
     <div class="form-group">
         {{ form.csrf_token }}
-        <input type="hidden" id="id" value="{{ user.id }}">
         <label for="firstname">First name</label><br>
         {{ form.firstname(class_="form-control")  }} <br>
         <label for="lastname">Last name</label><br>
@@ -20,16 +19,11 @@
         <label for="role">Role</label><br>
         <select name="role" id="role">
             {% for role in roles|sort(attribute='id') %}
-                {% if role in user.roles %}
-                <option value="{{ role.id }}" selected>{{ role.name.capitalize() }}</option>
-                {% else %}
                 <option value="{{ role.id }}">{{ role.name.capitalize() }}</option>
-                {% endif %}
             {% endfor %}
         </select><br>
         <br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
-        <button class="btn btn-outline-danger" id="remove">Delete</button>
     </div>
 </form>
 {% endblock %}
@@ -40,7 +34,6 @@
             e.preventDefault();
             const fields = {
                 csrf_token: document.getElementById('csrf_token'),
-                id: document.getElementById('id'),
                 firstname: document.getElementById('firstname'),
                 lastname: document.getElementById('lastname'),
                 email: document.getElementById('email'),
@@ -50,7 +43,6 @@
             // jsonify input
             const data = JSON.stringify({
                 csrf_token: fields.csrf_token.value,
-                id: fields.id.value,
                 firstname: fields.firstname.value,
                 lastname: fields.lastname.value,
                 email: fields.email.value,
@@ -58,7 +50,7 @@
                 role: fields.role.value,
             });
             // send request to validate form
-            const response = await fetch("{{ url_for('administration.edit_user', user_id=user.id) }}", {
+            const response = await fetch("{{ url_for('administration.add_user') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -67,7 +59,7 @@
             });
             // handle response
             if(response.ok) {
-                const apiresponse = await fetch("{{ url_for('api.administration_api.edit_user') }}", {
+                const apiresponse = await fetch("{{ url_for('api.administration_api.add_user') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

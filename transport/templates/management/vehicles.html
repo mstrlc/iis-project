@@ -15,6 +15,8 @@
                     <h5 class="card-title">{{ vehicle.name }}</h5>
                     {% if vehicle.status == "available" %}
                         <h6 class="card-subtitle mb-2 text-success">✓ Available</h6>
+                    {% elif vehicle.status == "requested" %}
+                        <h6 class="card-subtitle mb-2 text-info">? Requested maintenance</h6>
                     {% elif vehicle.status == "maintenance" %}
                         <h6 class="card-subtitle mb-2 text-warning">! Needs maintenance</h6>
                     {% else %}

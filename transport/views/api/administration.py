@@ -28,13 +28,13 @@ def add_user():
             return make_response(jsonify(res), 401)
         # New user
         else:
-            user_role = Role.query.filter_by(id="role_id").first()
+            user_role = Role.query.filter_by(id=role_id).first()
             user = User(
                 email=req.get("email"),
                 firstname=req.get("firstname"),
                 lastname=req.get("lastname"),
                 password=req.get("password"),
-                role=user_role,
+                roles=[user_role],
             )
             user.save()
             res = {
@@ -42,25 +42,6 @@ def add_user():
                 "message": "Registered successfully",
             }
             return make_response(jsonify(res), 201)
-
-
-        # Check if email already exists
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user and existing_user.email == email:
-            res = {
-                "status": "fail",
-                "message": "Email already exists",
-            }
-            return make_response(jsonify(res), 422)
-        # Email does not exist, create new user
-        role = Role.query.filter_by(id=role_id).first()
-        user = User(firstname=firstname, lastname=lastname, email=email, password=password, roles=[role])
-        user.save()
-        res = {
-            "status": "success",
-            "message": "Added user successfully",
-        }
-        return make_response(jsonify(res), 200)
 
 @administration_api_bp.route("/edit_user", methods=["POST"])
 def edit_user():

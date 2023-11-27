@@ -72,8 +72,9 @@
     <script>
         const direction = document.getElementById('direction');
         const line_id = document.getElementById('line_id');
+        const time = document.getElementById('time');
         // make iterable from the two
-        const iterable = [direction, line_id];
+        const iterable = [direction, line_id, time];
 
         // add event listener to each
         for (const element of iterable) {
@@ -85,8 +86,6 @@
                     direction: document.getElementById('direction'),
                     days_of_week: document.getElementById('days_of_week'),
                     line_id: document.getElementById('line_id'),
-                    vehicle_id: document.getElementById('vehicle_id'),
-                    driver_id: document.getElementById('driver_id'),
                 };
                 // jsonify input
                 const data = JSON.stringify({
@@ -96,8 +95,6 @@
                     direction: fields.direction.value,
                     days_of_week: fields.days_of_week.value,
                     line_id: fields.line_id.value,
-                    vehicle_id: fields.vehicle_id.value,
-                    driver_id: fields.driver_id.value,
                 });
                 // send request to validate form
                 const response = await fetch("{{ url_for('management.edit_connection', connection_id=connection.id) }}", {
