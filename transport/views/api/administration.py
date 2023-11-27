@@ -4,11 +4,14 @@ from flask import jsonify
 from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
+from transport.views import roles_required
 from transport.models import User, Role
 
 administration_api_bp = Blueprint("administration_api", __name__)
 
 @administration_api_bp.route("/add_user", methods=["POST"])
+@login_required
+@roles_required(['admin'])
 def add_user():
     req = request.get_json()
     with current_app.app_context():
@@ -44,6 +47,8 @@ def add_user():
             return make_response(jsonify(res), 201)
 
 @administration_api_bp.route("/edit_user", methods=["POST"])
+@login_required
+@roles_required(['admin'])
 def edit_user():
     req = request.get_json()
     with current_app.app_context():
@@ -76,6 +81,8 @@ def edit_user():
         return make_response(jsonify(res), 200)
 
 @administration_api_bp.route("/remove_user", methods=["POST"])
+@login_required
+@roles_required(['admin'])
 def remove_user():
     req = request.get_json()
     with current_app.app_context():
