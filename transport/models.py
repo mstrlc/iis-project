@@ -48,7 +48,7 @@ class User(db.Model, Base):
     firstname = Column(String(80), nullable=False)
     lastname = Column(String(80), nullable=False)
     deleted = Column(Boolean, default=False)
-    role = Column(Enum('admin', 'manager', 'technician', 'dispatcher', 'driver', 'customer', name='role'), nullable=False, default='customer')
+    roles = relationship('Role', secondary='user_roles', backref=backref('users', lazy='dynamic'))
     _password = Column("password", String(255), nullable=False)
 
     @property
@@ -76,6 +76,17 @@ class User(db.Model, Base):
 
     def verify_password(self, password):
         return check_password_hash(self._password, password)
+    
+class Role(db.Model):
+    __tablename__='roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+class UserRoles(db.Model):
+    __tablename__='user_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
 
 
 class Stop(db.Model, Base):
