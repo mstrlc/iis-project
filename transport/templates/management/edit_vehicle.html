@@ -9,34 +9,52 @@
     <div class="form-group">
         {{ form.csrf_token }}
         <input type="hidden" id="id" value="{{ vehicle.id }}">
-        <label for="name">Name</label><br>
-        {{ form.name(class_="form-control")  }} <br>
-        <label for="type">type</label><br>
-        <select id="type">
-            {% for value in ['tram', 'bus', 'trolley', 'boat'] %}
-                {% if value == vehicle.type %}
+        {% if current_user.roles[0].name in ['manager','admin']  %}
+            <label for="name">Name</label><br>
+            {{ form.name(class_="form-control")  }} <br>
+            <label for="type">type</label><br>
+            <select id="type">
+                {% for value in ['tram', 'bus', 'trolley', 'boat'] %}
+                    {% if value == vehicle.type %}
+                        <option value="{{value}}" selected>{{value}}</option>
+                    {% else %}
+                        <option value="{{value}}">{{value}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+                <br>
+            <label for="make">make</label><br>
+            {{ form.make(class_="form-control") }} <br>
+            <label for="model">model</label><br>
+            {{ form.model(class_="form-control") }} <br>
+            <label for="specs">specs</label><br>
+            {{ form.specs(class_="form-control") }} <br>
+            <label for="status">Status</label><br>
+            <select id="status">
+            {% for value in ['good', 'maintenance'] %}
+                {% if value == vehicle.status %}
                     <option value="{{value}}" selected>{{value}}</option>
                 {% else %}
                     <option value="{{value}}">{{value}}</option>
                 {% endif %}
             {% endfor %}
-            </select>
-            <br>
-        <label for="make">make</label><br>
-        {{ form.make(class_="form-control") }} <br>
-        <label for="model">model</label><br>
-        {{ form.model(class_="form-control") }} <br>
-        <label for="specs">specs</label><br>
-        {{ form.specs(class_="form-control") }} <br>
-        <label for="status">Status</label><br>
-        <select id="status">
-        {% for value in ['good', 'maintenance'] %}
-            {% if value == vehicle.status %}
-                <option value="{{value}}" selected>{{value}}</option>
-            {% else %}
-                <option value="{{value}}">{{value}}</option>
-            {% endif %}
-        {% endfor %}
+        {% endif %}
+        {% if current_user.roles[0].name=='driver'  %}
+            <input type="hidden" id="name" value="{{ vehicle.name }}">
+            <input type="hidden" id="type" value="{{ vehicle.type }}">
+            <input type="hidden" id="make" value="{{ vehicle.make }}">
+            <input type="hidden" id="model" value="{{ vehicle.model }}">
+            <input type="hidden" id="specs" value="{{ vehicle.specs }}">
+            <label for="status">Status</label><br>
+            <select id="status">
+            {% for value in ['good', 'maintenance'] %}
+                {% if value == vehicle.status %}
+                    <option value="{{value}}" selected>{{value}}</option>
+                {% else %}
+                    <option value="{{value}}">{{value}}</option>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         </select>
         <br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>

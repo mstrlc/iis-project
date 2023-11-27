@@ -97,7 +97,7 @@ def edit_line(line_id):
 
 @management_bp.route("/vehicles", methods=["GET", "POST"])
 @login_required
-@roles_required(['technician','manager', 'admin'])
+@roles_required(['driver', 'technician', 'manager', 'admin'])
 def vehicles():
     vehicles = Vehicle.query.all()
     return render_template("management/vehicles.html", vehicles=vehicles)
@@ -120,7 +120,7 @@ def add_vehicle():
 
 @management_bp.route("/vehicles/<int:vehicle_id>", methods=["GET", "POST"])
 @login_required
-@roles_required(['manager', 'admin'])
+@roles_required(['driver', 'manager', 'admin'])
 def edit_vehicle(vehicle_id):
     vehicle = Vehicle.query.get(vehicle_id)
     vehicle_form = VehicleForm(obj=vehicle)

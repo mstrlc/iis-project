@@ -21,7 +21,7 @@
                         <h6 class="card-subtitle mb-2 text-danger">✗ Unavailable</h6>
                     {% endif %}
                     <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.type }}, {{ vehicle.make }}, {{ vehicle.model }}, {{ vehicle.specs }}, {{ vehicle.status }}</h6>
-                    {% if current_user.roles[0].name in ['manager','admin']  %}
+                    {% if current_user.roles[0].name in ['driver','manager','admin']  %}
                         <a href="{{ url_for('management.edit_vehicle', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Edit</a>
                     {% endif %}
                     {% if current_user.roles[0].name in ['technician','admin']  %}
