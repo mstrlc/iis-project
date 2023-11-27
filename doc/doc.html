@@ -21,57 +21,92 @@
 	<dt>Autoři</dt>
 	<dd>Matyáš Strelec <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
 	    <a href="mailto:xstrel03@stud.fit.vutbr.cz">xstrel03@stud.fit.vutbr.cz</a> -
-		popis činnosti v týmu
+		Implementace API, domovská stránka, setup, přihlašování, registrace, administrace, management, dispatching, nasazení aplikace, video
 	</dd>
 	<dd>Maxmilián Nový <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
 	    <a href="mailto:xnovym00@stud.fit.vutbr.cz">xnovym00@stud.fit.vutbr.cz</a> -
-		popis činnosti v týmu
+		Návrh (ER) a implementace modelů, doplnění API, přístupová práva, implementace spojení a maintenance
 	</dd>
   <dd>Ondřej Seidl <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
 	    <a href="mailto:xseidl06@stud.fit.vutbr.cz">xseidl06@stud.fit.vutbr.cz</a> -
-		popis činnosti v týmu
+		 Dokumentace, testování, doplnění API, testovací data
 	</dd>
 	<dt>URL aplikace</dt>
-	<dd><a href="https://iis.mstrlc.eu">https://iis.mstrlc.eu</a></dd>
+	<dd><b><a href="https://iis.mstrlc.eu">https://iis.mstrlc.eu</a></b></dd>
 </dl>
 
 <h2>Uživatelé systému pro testování</h2>
-<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
 <table>
 <tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
 <tr><td>admin@transport.com</td><td>admin</td><td>Administrátor</td></tr>
-<tr><td>manager@transport.com</td><td>manager</td><td>Manažer</td></tr>
+<tr><td>manager@transport.com</td><td>manager</td><td>Správce</td></tr>
 <tr><td>technician@transport.com</td><td>technician</td><td>Technik</td></tr>
 <tr><td>dispatcher@transport.com</td><td>dispatcher</td><td>Dispečer</td></tr>
 <tr><td>driver@transport.com</td><td>driver</td><td>Řidič</td></tr>
-<tr><td>user@transport.com</td><td>user</td><td>Uživatel</td></tr>
+<tr><td>user@transport.com</td><td>user</td><td>Uživatel/Zákazník</td></tr>
 </table>
 
 <h3>Video</h3>
 
-<p>Přiložte odkaz na komentované video demostrující použití informačního systému. Zaměřte se na případy užití definované zadáním (např. registrace uživatele, správa uživatelů a činnosti jednotlivých rolí). Video nahrajte například na VUT Google Drive, kde ho bude možné přímo spustit z odkazu.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/23CedhtuM2E" title="IIS - Dopravni podnik - tym xseidl06" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><br>
+<a href="https://www.youtube.com/watch?v=23CedhtuM2E">Odkaz</a>
 
 <h2>Implementace</h2>
-<p>Stručná dokumentace k implementaci, která popisuje, které části projektu (např. PHP skripty) implementují jednotlivé případy použití.</p>
+<h3>/transport</h3>
+<ul>
+	<li>
+		<b>transport/templates</b> - šablony pro HTML stránky
+	</li>
+	<li><b>transport/views</b> - implementace views
+		<ul>
+				<li><b>transport/views/api</b> - implementace API:
+					<ul>
+						<li>authentication.py - implementace přihlašování a odhlašování, registrace
+						</li>
+						<li>administration.py - přidání, odebrání a editace uživatelů
+						</li>
+						<li>management.py - přidání, odebrání a editace spojení, linek, vozidel, zastávek, údržby
+						</li>
+					</ul>
+				</li>
+			<li>authentication.py - view pro přihlašování a odhlašování, registrace
+			</li>
+			<li>administration.py - view pro administraci uživatelů
+			</li>
+			<li>management.py - view pro management spojení, linek, vozidel, zastávek, údržby
+			</li>
+			<li>home.py - view pro domovskou stránku
+			</li>		
+		</ul>
+	<li>
+		app.py - konfigurace aplikace a blueprintů
+	</li>
+	<li>
+		models.py - implementace modelů
+	</li>
+	
+	
+</ul>
 
 <h3>Databáze</h3>
 
-<img src="../iis-project/db/er.png" alt="Databáze" width="700" height="600" />
+<img src="./er.png" alt="Databáze" width="700" height="600" />
 
 <h2>Instalace</h2>
 
 <h3>Softwarové požadavky</h3>
-Doporučené je používat Python 3. Flask ale podporuje Python 3.5 a novější, Python 2.7, and PyPy.
+<p>Doporučené je používat Python 3. Flask ale podporuje Python 3.5 a novější, Python 2.7, and PyPy.</p>
 
 <h3>Databáze</h3>
-Je třeba mít nainstalovaný <b>MySQL server</b>. Dále vytvořenou databázi s názvem <b>Transport</b>.<br>
+<p>Je třeba mít nainstalovaný <b>MySQL server</b>. Dále vytvořenou databázi s názvem <b>Transport</b></p>
 
+<p>V app.py lze nastavit při prvním spuštění <code>app.config["SAMPLE_DATA"] = True</code> pro vložení testovacích dat</p>
 <h3>Instalace</h3>
 
 <ol>
 	<li>Zkopírujte .env.example do .myenv
 	</li>
-	<li>V .myenv nahraďte obsah DATABASE_URI vaším připojením k databázi<br>
+	<li>V .myenv nahraďte obsah<code> DATABASE_URI </code>vaším připojením k databázi<br>
 		<b><code>DATABASE_URI=mysql+pymysql://root:<your_password>@localhost/transport</code></b><br>
 	</li>
 	<li>Spusťte python virtuální prostředí
@@ -107,7 +142,7 @@ Je třeba mít nainstalovaný <b>MySQL server</b>. Dále vytvořenou databázi s
 
 
 <h2>Známé problémy</h2>
-<p>Zde popište, které body zadání nejsou implementovány a z jakého důvodu. Např. &bdquo;Z časových důvodů nebyla implementována správa uživatelů.&rdquo; Pomůžete tím zrychlit hodnocení, když neimplementované funkce nebudeme muset dlouze hledat.</p>
+<p>Dispatcher může upravovat čas u spojení (měla by to být práce správce).</p>
 
 </body>
 </html>
