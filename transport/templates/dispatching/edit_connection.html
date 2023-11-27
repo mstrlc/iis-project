@@ -55,11 +55,21 @@
             <div>
                 {% for stop in stops if stop.id == lineStop.stop_id %}
                 <h5 class="card-title">{{ stop.name }}</h5>
-                {% set minute = (connection.time.minute+lineStop.time_from_start)%60 %}
-                {% set totalMinutes = connection.time.minute + lineStop.time_from_start %}
-                {% set hour = connection.time.hour + (totalMinutes // 60) %}
-                {% set minute = totalMinutes % 60 %}
-                {% set time = datetime.time(hour, minute, 0) %}
+                {% if rev == False %}
+                    {% set minute = (connection.time.minute+lineStop.time_from_start)%60 %}
+                    {% set totalMinutes = connection.time.minute + lineStop.time_from_start %}
+                    {% set hour = connection.time.hour + (totalMinutes // 60) %}
+                    {% set minute = totalMinutes % 60 %}
+                    {% set time = datetime.time(hour, minute, 0) %}
+                {% else %}
+                    {% set last_stop = line.line_stops|sort(attribute='order')|last %}
+                    {% set last_stop_time = last_stop.time_from_start %}
+                    {% set minute = (connection.time.minute+ last_stop_time - lineStop.time_from_start)%60 %}
+                    {% set totalMinutes = connection.time.minute + last_stop_time - lineStop.time_from_start %}
+                    {% set hour = connection.time.hour + (totalMinutes // 60) %}
+                    {% set minute = totalMinutes % 60 %}
+                    {% set time = datetime.time(hour, minute, 0) %}
+                {% endif %}
                 <p id="time_from_start-{{stop.id}}"> {{ time }}</p>
                 {% endfor %}
             </div>
