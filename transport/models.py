@@ -126,6 +126,7 @@ class Connection(db.Model, Base):
     days_of_week = Column(String(100), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=True)
     line_id = Column(Integer, ForeignKey('lines.id'), nullable=False)
+    driver_id = Column(Integer, ForeignKey('users.id'), nullable=True)
 
 
 class Maintenance(db.Model, Base):

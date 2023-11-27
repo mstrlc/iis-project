@@ -14,16 +14,6 @@
         {{ form.direction(class_="form-control")  }} <br>
         <label for="days_of_week">Days_of_week</label><br>
         {{ form.days_of_week(class_="form-control")  }} <br>
-        <label for="vehicle_id">Vehicle</label><br>
-        <select name="vehicle_id" id="vehicle_id">
-            {% for vehicle in vehicles %}
-                {% if vehicle == for_vehicle %}
-                <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
-                {% else %}
-                <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
-                {% endif %}
-            {% endfor %}
-        </select><br>
         <label for="line_id">Line</label><br>
         <select name="line_id" id="line_id">
             {% for line in lines %}
@@ -48,7 +38,6 @@
                 time: document.getElementById('time'),
                 direction: document.getElementById('direction'),
                 days_of_week: document.getElementById('days_of_week'),
-                vehicle_id: document.getElementById('vehicle_id'),
                 line_id: document.getElementById('line_id'),
             };
             // jsonify input
@@ -57,7 +46,6 @@
                 time: fields.time.value,
                 direction: fields.direction.value,
                 days_of_week: fields.days_of_week.value,
-                vehicle_id: fields.vehicle_id.value,
                 line_id: fields.line_id.value,
             });
             // send request to validate form

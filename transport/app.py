@@ -29,7 +29,7 @@ def create_app():
     db.init_app(app)
     with app.app_context():
 
-        # models_changed(app)
+        #models_changed(app)
         db.create_all()
 
         db.session.commit()

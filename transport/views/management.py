@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from transport.models import Stop, Vehicle, Line, LinesStops, Connection, Maintenance
+from transport.models import Stop, User, Vehicle, Line, LinesStops, Connection, Maintenance
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, EmailField, TimeField, DateTimeLocalField
 from wtforms.validators import DataRequired, Email
@@ -147,7 +147,6 @@ def connections():
 @roles_required(['manager', 'admin'])
 def add_connection():
     connection_form = ConnectionForm()
-    vehicles = Vehicle.query.all()
     lines = Line.query.all()
     if request.method == "POST":
         if connection_form.validate():
@@ -158,7 +157,7 @@ def add_connection():
             return jsonify(res), 200
         else:
             return jsonify(connection_form.errors), 400
-    return render_template("management/add_connection.html", form=connection_form, vehicles = vehicles, lines = lines)
+    return render_template("management/add_connection.html", form=connection_form, lines = lines)
 
 @management_bp.route("/connections/<int:connection_id>", methods=["GET", "POST"])
 @login_required
@@ -167,6 +166,7 @@ def edit_connection(connection_id):
     connection = Connection.query.get(connection_id)
     vehicles = Vehicle.query.all()
     lines = Line.query.all()
+    users = User.query.all()
     line = Line.query.get(connection.line_id)
     stops = Stop.query.all()
     connection_form = ConnectionForm(obj=connection)
@@ -179,7 +179,13 @@ def edit_connection(connection_id):
             return jsonify(res), 200
         else:
             return jsonify(connection_form.errors), 400
-    return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime)
+    if(current_user.roles[0].name == 'admin'):
+        return render_template("administration/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime, users =users)
+    elif(current_user.roles[0].name == 'dispatcher'):
+        return render_template("dispatching/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime, users =users)
+    elif(current_user.roles[0].name == 'manager'):
+        return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime, users =users)
+    
 
 @management_bp.route("/maintenance", methods=["GET", "POST"])
 @login_required
@@ -264,8 +270,6 @@ class ConnectionForm(FlaskForm):
     time = TimeField("Time", validators=[DataRequired()])
     direction = StringField("Direction", validators=[DataRequired()])
     days_of_week = StringField("Days of week", validators=[DataRequired()])
-    vehicle_id = IntegerField("Vehicle id")
-    line_id = IntegerField("Line id", validators=[DataRequired()])
 
 class MaintenanceForm(FlaskForm):
     id = IntegerField("ID", render_kw={'readonly': True})

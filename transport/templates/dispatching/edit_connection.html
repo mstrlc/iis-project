@@ -16,17 +16,28 @@
         {{ form.direction(class_="form-control")  }} <br>
         <label for="days_of_week">Days_of_week</label><br>
         {{ form.days_of_week(class_="form-control")  }} <br>
-        <label for="line_id">Line</label><br>
-        <select name="line_id" id="line_id">
-            {% for ln in lines %}
-                {% if ln == line %}
-                <option value="{{ ln.id }}" selected>{{ ln.name }}</option>
+        <input type="hidden" id="line_id" value="{{ connection.line_id }}">
+        <label for="vehicle_id">Vehicle</label><br>
+        <select name="vehicle_id" id="vehicle_id">
+            {% for vehicle in vehicles %}
+                {% if vehicle == for_vehicle %}
+                <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
                 {% else %}
-                <option value="{{ ln.id }}">{{ ln.name }}</option>
+                <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
                 {% endif %}
             {% endfor %}
         </select><br>
-    
+        <label for="driver_id">Driver</label><br>
+        <select name="driver_id" id="driver_id">
+            {% for user in users if user.roles[0].name == 'driver'%}
+                {% if user == for_user %}
+                <option value="{{ user.id }}" selected>{{ user.firstname }} {{ user.lastname }}</option>
+                {% else %}
+                <option value="{{ user.id }}">{{ user.name }} {{ user.lastname }}</option>
+                {% endif %}
+            {% endfor %}
+        </select><br>
+        
         
 
         <h3>Stops</h3>
@@ -60,6 +71,8 @@
                 direction: document.getElementById('direction'),
                 days_of_week: document.getElementById('days_of_week'),
                 line_id: document.getElementById('line_id'),
+                vehicle_id: document.getElementById('vehicle_id'),
+                driver_id: document.getElementById('driver_id'),
             };
             // jsonify input
             const data = JSON.stringify({
@@ -69,6 +82,8 @@
                 direction: fields.direction.value,
                 days_of_week: fields.days_of_week.value,
                 line_id: fields.line_id.value,
+                vehicle_id: fields.vehicle_id.value,
+                driver_id: fields.driver_id.value,
             });
             // send request to validate form
             const response = await fetch("{{ url_for('management.edit_connection', connection_id=connection.id) }}", {
@@ -118,6 +133,8 @@
                 direction: document.getElementById('direction'),
                 days_of_week: document.getElementById('days_of_week'),
                 line_id: document.getElementById('line_id'),
+                vehicle_id: document.getElementById('vehicle_id'),
+                driver_id: document.getElementById('driver_id'),
             };
             // jsonify input
             const data = JSON.stringify({
@@ -126,6 +143,8 @@
                 time: fields.time.value,
                 direction: fields.direction.value,
                 line_id: fields.line_id.value,
+                vehicle_id: fields.vehicle_id.value,
+                driver_id: fields.driver_id.value,
             });
             const apiresponse = await fetch("{{ url_for('api.management_api.remove_connection') }}", {
                 method: "POST",
