@@ -11,9 +11,9 @@
         <input type="hidden" id="id" value="{{ stop.id }}">
         <label for="name">Name</label><br>
         {{ form.name(class_="form-control")  }} <br>
-        <label for="latitude">Latitude</label><br>
+        <label for="latitude">Latitude (format like 16.6237300E or 16.6237300W)</label><br>
         {{ form.latitude(class_="form-control") }} <br>
-        <label for="longitude">Longitude</label><br>
+        <label for="longitude">Longitude  (format like 49.2044942N or 49.2044942S)</label><br>
         {{ form.longitude(class_="form-control") }} <br>
         <button class="btn btn-outline-secondary" type="submit">Save</button>
         <button class="btn btn-outline-danger" id="remove">Delete</button>
