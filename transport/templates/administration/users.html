@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block content %}
-    <a href="{{ url_for('administration.add_user') }}" class="btn btn-outline-secondary">Add</a>
+    {% if current_user.roles[0].name in ['admin']  %}
+        <a href="{{ url_for('administration.add_user') }}" class="btn btn-outline-secondary">Add</a>
+    {% endif %}
     {% for user in users if user.deleted != 1 %}
         <div class="card">
             <div class="card-body">
