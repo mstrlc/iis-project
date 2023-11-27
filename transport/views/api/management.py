@@ -305,7 +305,7 @@ def add_maintenance():
         maintenance.description = description
         maintenance.save()
         vehicle = Vehicle.query.get(vehicle_id)
-        vehicle.status = "good"
+        vehicle.status = "available"
         vehicle.save()
         res = {
             "status": "success",
