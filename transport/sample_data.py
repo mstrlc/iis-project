@@ -24,7 +24,7 @@ def generate_random_names(num_names, entity):
 
 def insert_sample_users():
     from transport.models import User
-    users = [ "admin", "manager", "technician", "dispatcher", "driver", "customer" ]
+    users = [ "admin", "manager", "technician", "dispatcher", "driver", "user" ]
     names = generate_random_names(len(users), "user")
     # for each check if users already exist
     for i, user in enumerate(users):
@@ -33,17 +33,17 @@ def insert_sample_users():
             new_user = User(email=f'{user}@transport.com', firstname=names[i].split(' ', 1)[0], lastname=names[i].split(' ', 1)[1])
             new_user.roles.append(role)
             new_user.password = user
-            
+
             new_user.save()
-            
+
 def insert_sample_roles():
     from transport.models import Role
-    roles = [ "admin", "manager", "technician", "dispatcher", "driver", "customer" ]
+    roles = [ "admin", "manager", "technician", "dispatcher", "driver", "user" ]
     for i, role in enumerate(roles):
         if not Role.query.filter_by(name=role).first():
             new_role = Role(name=roles[i])
             new_role.save()
-            
+
 def insert_sample_vehicles():
     from transport.models import Vehicle
     vehicles = [ "bus", "tram", "trolleybus" ]

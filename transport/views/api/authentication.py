@@ -4,7 +4,7 @@ from flask import jsonify
 from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
-from transport.models import User
+from transport.models import User, Role
 
 authentication_api_bp = Blueprint("authentication_api", __name__)
 
@@ -88,13 +88,14 @@ def register():
             return make_response(jsonify(res), 401)
         # New user
         else:
+            user_role = Role.query.filter_by(name="user").first()
             user = User(
                 email=req.get("email"),
                 firstname=req.get("firstname"),
                 lastname=req.get("lastname"),
                 password=req.get("password"),
+                role=user_role,
             )
-
             user.save()
             res = {
                 "status": "success",

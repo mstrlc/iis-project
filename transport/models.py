@@ -77,7 +77,7 @@ class User(db.Model, Base):
 
     def verify_password(self, password):
         return check_password_hash(self._password, password)
-    
+
 class Role(db.Model, Base):
     __tablename__='roles'
     id = Column(Integer, primary_key=True)

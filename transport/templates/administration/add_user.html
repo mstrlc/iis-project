@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Edit user
+    Add user
 {% endblock %}
 
 {% block content %}
@@ -15,6 +15,8 @@
         {{ form.lastname(class_="form-control") }} <br>
         <label for="email">Email</label><br>
         {{ form.email(class_="form-control") }} <br>
+        <label for="password">Password</label><br>
+        {{ form.password(class_="form-control") }} <br>
         <label for="role">Role</label><br>
         <select name="role" id="role">
             {% for role in roles|sort(attribute='id') %}
@@ -42,6 +44,7 @@
                 firstname: document.getElementById('firstname'),
                 lastname: document.getElementById('lastname'),
                 email: document.getElementById('email'),
+                password: document.getElementById('password'),
                 role: document.getElementById('role'),
             };
             // jsonify input
@@ -51,6 +54,7 @@
                 firstname: fields.firstname.value,
                 lastname: fields.lastname.value,
                 email: fields.email.value,
+                password: fields.password.value,
                 role: fields.role.value,
             });
             // send request to validate form

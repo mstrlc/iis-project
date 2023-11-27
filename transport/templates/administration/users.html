@@ -6,12 +6,13 @@
 {% endblock %}
 
 {% block content %}
+    <a href="{{ url_for('administration.add_user') }}" class="btn btn-outline-secondary">Add</a>
     {% for user in users if user.deleted != 1 %}
         <div class="card">
             <div class="card-body">
                 <div class="group align-right">
-                    <h6 class="card-subtitle mb-2 text-muted">#{{ user.id }}</h6>
                     <h5 class="card-title">{{ user.firstname }} {{ user.lastname }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ user.roles[0].name.capitalize() }}</h6>
                     <h6 class="card-subtitle mb-2 text-muted">{{ user.email }}</h6>
                     <a href="{{ url_for('administration.edit_user', user_id=user.id) }}" class="btn btn-outline-secondary">Edit</a>
                 </div>
