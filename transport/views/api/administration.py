@@ -99,8 +99,7 @@ def remove_user():
     req = request.get_json()
     with current_app.app_context():
         user = User.query.get(req.get("id"))
-        user.deleted = True
-        user.save()
+        user.remove()
         res = {
             "status": "success",
             "message": "Removed user successfully",

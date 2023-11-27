@@ -32,7 +32,6 @@ def create_app():
         # models_changed(app)
         db.create_all()
 
-
         db.session.commit()
         db.session.expunge_all()
         db.session.remove()

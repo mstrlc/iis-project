@@ -33,7 +33,6 @@ def insert_sample_users():
             new_user = User(email=f'{user}@transport.com', firstname=names[i].split(' ', 1)[0], lastname=names[i].split(' ', 1)[1])
             new_user.roles.append(role)
             new_user.password = user
-
             new_user.save()
 
 def insert_sample_roles():

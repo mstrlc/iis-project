@@ -30,12 +30,6 @@ def login():
                 "message": "User does not exist",
             }
             return make_response(jsonify(res), 401)
-        # User exists in database but is deleted
-        elif user.deleted:
-            res = {
-                "status": "fail",
-                "message": "User does not exist",
-            }
         # User exists in database but wrong password
         elif not user.verify_password(req.get("password")):
             res = {

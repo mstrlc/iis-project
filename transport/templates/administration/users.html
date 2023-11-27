@@ -9,7 +9,7 @@
     {% if current_user.roles[0].name in ['admin']  %}
         <a href="{{ url_for('administration.add_user') }}" class="btn btn-outline-secondary">Add</a>
     {% endif %}
-    {% for user in users if user.deleted != 1 %}
+    {% for user in users %}
         <div class="card">
             <div class="card-body">
                 <div class="group align-right">

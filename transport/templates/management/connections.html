@@ -9,7 +9,7 @@
         {% if current_user.roles[0].name in ['manager','admin']  %}
             <a href="{{ url_for('management.add_connection') }}" class="btn btn-outline-secondary">Add</a>
         {% endif %}
-        {% for connection in connections if connection.deleted != 1 %}
+        {% for connection in connections %}
             <div class="card">
                 <div class="card-body">
                     <div class="group align-right">
@@ -25,7 +25,7 @@
             <br>
         {% endfor %}
     {% else %}
-    {% for connection in connections if connection.deleted != 1 %}
+    {% for connection in connections %}
             <div class="card">
                 <div class="card-body">
                     <div class="group align-right">
@@ -37,6 +37,6 @@
             </div>
             <br>
         {% endfor %}
-        
+
     {% endif %}
 {% endblock %}

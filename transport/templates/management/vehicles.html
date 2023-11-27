@@ -8,7 +8,7 @@
     {% if current_user.roles[0].name in ['manager','admin']  %}
         <a href="{{ url_for('management.add_vehicle') }}" class="btn btn-outline-secondary">Add</a>
     {% endif %}
-    {% for vehicle in vehicles if vehicle.deleted != 1 %}
+    {% for vehicle in vehicles %}
         <div class="card">
             <div class="card-body">
                 <div class="group align-right">

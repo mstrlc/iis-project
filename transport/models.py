@@ -48,7 +48,6 @@ class User(db.Model, Base):
     email = Column(String(120), unique=True, nullable=False)
     firstname = Column(String(80), nullable=False)
     lastname = Column(String(80), nullable=False)
-    deleted = Column(Boolean, default=False)
     roles = relationship('Role', secondary='user_roles', backref=backref('users', lazy='dynamic'))
     _password = Column("password", String(255), nullable=False)
 
@@ -96,7 +95,6 @@ class Stop(db.Model, Base):
     name = Column(String(100), unique=True, nullable=False)
     latitude = Column(String(20), nullable=False)
     longitude = Column(String(20), nullable=False)
-    deleted = Column(Boolean, default=False)
     stop_lines = relationship('LinesStops', back_populates='stops')
 
 
@@ -105,7 +103,6 @@ class Line(db.Model, Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     connections = relationship('Connection', backref='lines')
-    deleted = Column(Boolean, default=False)
     line_stops = relationship('LinesStops', back_populates='lines')
 
 
@@ -118,7 +115,6 @@ class Vehicle(db.Model, Base):
     model = Column(String(100), nullable=False)
     specs = Column(String(150), nullable=False)
     status = Column(String(100), nullable=False)
-    deleted = Column(Boolean, default=False)
     connections = relationship('Connection', backref='vehicles')
 
 
@@ -129,7 +125,6 @@ class Connection(db.Model, Base):
     direction = Column(String(20), nullable=False)
     days_of_week = Column(String(100), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=True)
-    deleted = Column(Boolean, default=False)
     line_id = Column(Integer, ForeignKey('lines.id'), nullable=False)
 
 
@@ -138,6 +133,5 @@ class Maintenance(db.Model, Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
     description = Column(Text(2048), nullable=False)
-    deleted = Column(Boolean, default=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
 
