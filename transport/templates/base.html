@@ -15,24 +15,35 @@
                     <a class="nav-link" href="/">Home</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="{{ url_for('administration.users') }}">Users</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="{{ url_for('management.stops') }}">Stops</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="{{ url_for('management.lines') }}">Lines</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="{{ url_for('management.vehicles') }}">Vehicles</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="{{ url_for('management.maintenance') }}">Maintenance</a>
-                </li>
-                <li>
                     <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
                 </li>
                 {% if current_user.is_authenticated %}
+                    {% if current_user.roles[0].name == "admin" %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('administration.users') }}">Users</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if current_user.roles[0].name in ["admin", "manager"]  %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('management.stops') }}">Stops</a>
+                        </li>
+                    {% endif %}
+                    {% if current_user.roles[0].name in ["admin", "manager"]  %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('management.lines') }}">Lines</a>
+                        </li>
+                    {% endif %}
+                    {% if current_user.roles[0].name in ["admin", "manager", "technician"]  %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('management.vehicles') }}">Vehicles</a>
+                        </li>
+                    {% endif %}
+                    {% if current_user.roles[0].name in ["admin", "manager", "technician"]  %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('management.maintenance') }}">Maintenance</a>
+                        </li>
+                    {% endif %}
                     <p>User {{ current_user.email }} </p>
                     <button id="logout" class="btn btn-outline-secondary" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
                 {% else %}

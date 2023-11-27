@@ -3,20 +3,25 @@ from transport.models import Stop, Vehicle, Line, LinesStops, Connection, Mainte
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, EmailField, TimeField, DateTimeLocalField
 from wtforms.validators import DataRequired, Email
-from flask_login import current_user
+from flask_login import current_user, login_required
 from flask import request, jsonify
 from wtforms import ValidationError
+from transport.views import roles_required
 import re
 import datetime
 
 management_bp = Blueprint("management", __name__)
 
 @management_bp.route("/stops", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def stops():
     stops = Stop.query.all()
     return render_template("management/stops.html", stops=stops)
 
 @management_bp.route("/stops/add", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def add_stop():
     stop_form = StopForm()
     if request.method == "POST":
@@ -31,6 +36,8 @@ def add_stop():
     return render_template("management/add_stop.html", form=stop_form)
 
 @management_bp.route("/stops/<int:stop_id>", methods=["GET", "POST"])
+@login_required
+@roles_required(['manager', 'admin'])
 def edit_stop(stop_id):
     stop = Stop.query.get(stop_id)
     stop_form = StopForm(obj=stop)
