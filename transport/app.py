@@ -28,10 +28,10 @@ def create_app():
     login_manager.init_app(app)
     db.init_app(app)
     with app.app_context():
-        
-        models_changed(app)
+
+        # models_changed(app)
         db.create_all()
-        
+
 
         db.session.commit()
         db.session.expunge_all()
@@ -60,7 +60,7 @@ def models_changed(app):
         insert_sample_vehicles()
         insert_sample_roles()
         insert_sample_users()
-        
+
 
 
 @login_manager.user_loader
