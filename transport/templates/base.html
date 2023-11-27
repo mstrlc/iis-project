@@ -69,6 +69,11 @@
                             <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
                         </li>
                     {% endif %}
+                    {% if current_user.roles[0].name == "user"  %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
+                        </li>
+                    {% endif %}
                     <li>
                         <p>User {{ current_user.email }}</p>
                     </li>
