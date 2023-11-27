@@ -151,6 +151,8 @@ def edit_connection(connection_id):
     connection = Connection.query.get(connection_id)
     vehicles = Vehicle.query.all()
     lines = Line.query.all()
+    line = Line.query.get(connection.line_id)
+    stops = Stop.query.all()
     connection_form = ConnectionForm(obj=connection)
     if request.method == "POST":
         if connection_form.validate():
@@ -161,7 +163,7 @@ def edit_connection(connection_id):
             return jsonify(res), 200
         else:
             return jsonify(connection_form.errors), 400
-    return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection, vehicles = vehicles, lines = lines)
+    return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime)
 
 @management_bp.route("/maintenance", methods=["GET", "POST"])
 def maintenance():

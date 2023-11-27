@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Edit line
+    Edit connection
 {% endblock %}
 
 {% block content %}
+
 <form id="form" method="POST" novalidate><br>
     <div class="form-group">
         {{ form.csrf_token }}
@@ -27,14 +28,28 @@
         </select><br>
         <label for="line_id">Line</label><br>
         <select name="line_id" id="line_id">
-            {% for line in lines %}
-                {% if line == for_line %}
-                <option value="{{ line.id }}" selected>{{ line.name }}</option>
+            {% for ln in lines %}
+                {% if ln == line %}
+                <option value="{{ ln.id }}" selected>{{ ln.name }}</option>
                 {% else %}
-                <option value="{{ line.id }}">{{ line.name }}</option>
+                <option value="{{ ln.id }}">{{ ln.name }}</option>
                 {% endif %}
             {% endfor %}
         </select><br>
+
+        <h3>Stops</h3>
+        <ul>
+            {% for lineStop in line.line_stops|sort(attribute='order') %}
+            {% set outer_loop = loop %}
+            <div>
+                {% for stop in stops if stop.id == lineStop.stop_id %}
+                <h5 class="card-title">{{ lineStop.order }}. {{ stop.name }}</h5>
+                <p id="time_from_start-{{stop.id}}"> {{ datetime.time(connection.time.hour+(lineStop.time_from_start//60), connection.time.minute+(lineStop.time_from_start%60), 0) }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </ul>
+
         <button class="btn btn-outline-secondary" type="submit">Save</button>
         <button class="btn btn-outline-danger" id="remove">Delete</button>
     </div>
@@ -65,7 +80,7 @@
                 line_id: fields.line_id.value,
             });
             // send request to validate form
-            const response = await fetch("{{ url_for('management.add_connection') }}", {
+            const response = await fetch("{{ url_for('management.edit_connection', connection_id=connection.id) }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -74,7 +89,7 @@
             });
             // handle response
             if(response.ok) {
-                const apiresponse = await fetch("{{ url_for('api.management_api.add_connection') }}", {
+                const apiresponse = await fetch("{{ url_for('api.management_api.edit_connection') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

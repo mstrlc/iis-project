@@ -262,7 +262,6 @@ def edit_connection():
     req = request.get_json()
     with current_app.app_context():
         connection = Connection.query.get(req.get("id"))
-        connection = Connection()
         time = req.get("time")
         direction = req.get("direction")
         days_of_week = req.get("days_of_week")
