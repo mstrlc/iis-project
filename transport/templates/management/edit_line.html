@@ -274,5 +274,35 @@
                 }
             });
         });
+
+        time_from_start_inputs.forEach((input) => {
+            input.addEventListener("change", async (e) => {
+                e.preventDefault();
+                let value = input.value;
+                let stop_id = input.id.split("-")[1];
+
+                const fields = {
+                    csrf_token: document.getElementById('csrf_token'),
+                    id: document.getElementById('id'),
+                    stop_id: stop_id,
+                    time_from_start: value,
+                };
+                // jsonify input
+                const data = JSON.stringify({
+                    csrf_token: fields.csrf_token.value,
+                    id: fields.id.value,
+                    stop_id: fields.stop_id,
+                    time_from_start: fields.time_from_start,
+                });
+                // send request to api
+                const apiresponse = fetch("{{ url_for('api.management_api.update_time_from_start') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                });
+            });
+        });
     </script>
 {% endblock %}

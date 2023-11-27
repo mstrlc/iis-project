@@ -31,7 +31,7 @@
             {{ form.specs(class_="form-control") }} <br>
             <label for="status">Status</label><br>
             <select id="status">
-            {% for value in ['good', 'maintenance'] %}
+            {% for value in ['available', 'maintenance', 'unavailable', 'requested'] %}
                 {% if value == vehicle.status %}
                     <option value="{{value}}" selected>{{value}}</option>
                 {% else %}
@@ -47,7 +47,7 @@
             <input type="hidden" id="specs" value="{{ vehicle.specs }}">
             <label for="status">Status</label><br>
             <select id="status">
-            {% for value in ['good', 'maintenance'] %}
+            {% for value in ['available', 'requested'] %}
                 {% if value == vehicle.status %}
                     <option value="{{value}}" selected>{{value}}</option>
                 {% else %}

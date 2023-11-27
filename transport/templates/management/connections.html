@@ -14,9 +14,37 @@
             <div class="card">
                 <div class="card-body">
                     <div class="group align-right">
-                        <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
-                        <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}, Vehicle: {{ connection.vehicle_id }}</h6>
+                        {%for line in lines %}
+                            {% if line.id == connection.line_id %}
+                                <h5 class="card-title">Line {{ line.name }}, {{ connection.time }}</h5>
+                            {% endif %}
+                        {% endfor %}
+                        {% for vehicle in vehicles %}
+                            {% if vehicle.id == connection.vehicle_id %}
+                                <h6 class="card-subtitle">{{ vehicle.name }}</h6>
+                            {% endif %}
+                        {% endfor %}
+                        <h6 class="card-subtitle mb-2 text-muted">
+                        {%for line in lines %}
+                            {% if line.id == connection.line_id %}
+                                {% if connection.direction == "forward" %}
+                                    {% set rev=False %}
+                                {% else %}
+                                    {% set rev=True %}
+                                {% endif %}
+                                {% for line_stop in line.line_stops|sort(attribute='order', reverse=rev) %}
+                                {% set outer_loop = loop %}
+                                {% for stop in stops if stop.id == line_stop.stop_id %}
+                                    {% if outer_loop.last %}
+                                        {{ stop.name }}
+                                    {% else %}
+                                        {{ stop.name }} –
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                                {% endif %}
+                        {% endfor %}
+                        </h6>
                         {% if current_user.roles[0].name in ['dispatcher','manager','admin']  %}
                             <a href="{{ url_for('management.edit_connection', connection_id=connection.id) }}" class="btn btn-outline-secondary">Edit</a>
                         {% endif %}
@@ -32,8 +60,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="group align-right">
-                        <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
-                        <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
+                        <h5 class="card-title">Line {{ connection.line_id }}, {{ connection.time }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}</h6>
                     </div>
                 </div>
