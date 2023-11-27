@@ -1,4 +1,5 @@
 
+from email.mime import base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import (
@@ -77,16 +78,16 @@ class User(db.Model, Base):
     def verify_password(self, password):
         return check_password_hash(self._password, password)
     
-class Role(db.Model):
+class Role(db.Model, Base):
     __tablename__='roles'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True)
 
-class UserRoles(db.Model):
+class UserRoles(db.Model, Base):
     __tablename__='user_roles'
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
-    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    role_id = Column(Integer, ForeignKey('roles.id', ondelete='CASCADE'))
 
 
 class Stop(db.Model, Base):

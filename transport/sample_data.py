@@ -1,4 +1,4 @@
-from transport.models import User, Stop, Line, Vehicle, Connection
+from transport.models import User, Stop, Line, Vehicle, Connection, Role
 
 import random
 
@@ -29,10 +29,21 @@ def insert_sample_users():
     # for each check if users already exist
     for i, user in enumerate(users):
         if not User.query.filter_by(email=f'{user}@transport.com').first():
+            role = Role.query.filter_by(name=user).first()
             new_user = User(email=f'{user}@transport.com', firstname=names[i].split(' ', 1)[0], lastname=names[i].split(' ', 1)[1])
+            new_user.roles.append(role)
             new_user.password = user
+            
             new_user.save()
-
+            
+def insert_sample_roles():
+    from transport.models import Role
+    roles = [ "admin", "manager", "technician", "dispatcher", "driver", "customer" ]
+    for i, role in enumerate(roles):
+        if not Role.query.filter_by(name=role).first():
+            new_role = Role(name=roles[i])
+            new_role.save()
+            
 def insert_sample_vehicles():
     from transport.models import Vehicle
     vehicles = [ "bus", "tram", "trolleybus" ]
