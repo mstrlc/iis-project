@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block content %}
-    <a href="{{ url_for('management.add_maintenance') }}" class="btn btn-outline-secondary">Add record</a>
+    {% if current_user.roles[0].name in ['technician','admin']  %}
+        <a href="{{ url_for('management.add_maintenance') }}" class="btn btn-outline-secondary">Add record</a>
+    {% endif %}
     {% for maintenance_record in maintenance %}
         <div class="card">
             <div class="card-body">
@@ -18,7 +20,9 @@
                         {% endif %}
                     {% endfor %}
                     <h6 class="card-text">{{ maintenance_record.description }}</h6>
-                    <a href="{{ url_for('management.edit_maintenance', maintenance_id=maintenance_record.id) }}" class="btn btn-outline-secondary">Edit</a>
+                    {% if current_user.roles[0].name in ['technician','admin']  %}
+                        <a href="{{ url_for('management.edit_maintenance', maintenance_id=maintenance_record.id) }}" class="btn btn-outline-secondary">Edit</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

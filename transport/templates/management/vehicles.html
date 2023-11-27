@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <a href="{{ url_for('management.add_vehicle') }}" class="btn btn-outline-secondary">Add</a>
+    {% if current_user.roles[0].name in ['manager','admin']  %}
+        <a href="{{ url_for('management.add_vehicle') }}" class="btn btn-outline-secondary">Add</a>
+    {% endif %}
     {% for vehicle in vehicles if vehicle.deleted != 1 %}
         <div class="card">
             <div class="card-body">
@@ -17,8 +19,12 @@
                         <h6 class="card-subtitle mb-2 text-danger">! Needs maintenance</h6>
                     {% endif %}
                     <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.type }}, {{ vehicle.make }}, {{ vehicle.model }}, {{ vehicle.specs }}, {{ vehicle.status }}</h6>
-                    <a href="{{ url_for('management.edit_vehicle', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Edit</a>
+                    {% if current_user.roles[0].name in ['manager','admin']  %}
+                        <a href="{{ url_for('management.edit_vehicle', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Edit</a>
+                    {% endif %}
+                    {% if current_user.roles[0].name in ['technician','admin']  %}
                     <a href="{{ url_for('management.add_maintenance', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Maintain</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
