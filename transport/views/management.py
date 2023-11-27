@@ -140,7 +140,8 @@ def connections():
     connections = Connection.query.all()
     vehicles = Vehicle.query.all()
     lines = Line.query.all()
-    return render_template("management/connections.html", connections=connections, vehicles = vehicles, lines = lines)
+    stops = Stop.query.all()
+    return render_template("management/connections.html", connections=connections, vehicles = vehicles, lines=lines, stops = stops)
 
 @management_bp.route("/connections/add", methods=["GET", "POST"])
 @login_required
@@ -185,7 +186,7 @@ def edit_connection(connection_id):
         return render_template("dispatching/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime, users =users)
     elif(current_user.roles[0].name == 'manager'):
         return render_template("management/edit_connection.html", form=connection_form, id=connection.id, connection=connection, stops=stops, vehicles = vehicles, lines = lines, line=line, datetime=datetime, users =users)
-    
+
 
 @management_bp.route("/maintenance", methods=["GET", "POST"])
 @login_required

@@ -13,7 +13,10 @@
         <label for="time">Time</label><br>
         {{ form.time(class_="form-control")  }} <br>
         <label for="direction">Direction</label><br>
-        {{ form.direction(class_="form-control")  }} <br>
+        <select id="direction">
+            <option value="forward" {% if connection.direction == "forward" %} selected {% endif %}>Forward</option>
+            <option value="backward" {% if connection.direction == "backward" %} selected {% endif %}>Backward</option>
+        </select><br>
         <label for="days_of_week">Days_of_week</label><br>
         {{ form.days_of_week(class_="form-control")  }} <br>
         <label for="line_id">Line</label><br>
@@ -51,11 +54,16 @@
 
         <h3>Stops</h3>
         <ul>
-            {% for lineStop in line.line_stops|sort(attribute='order') %}
+            {% if connection.direction == "forward" %}
+            {% set rev=False %}
+            {% else %}
+            {% set rev=True %}
+            {% endif %}
+            {% for lineStop in line.line_stops|sort(attribute='order', reverse=rev) %}
             {% set outer_loop = loop %}
             <div>
                 {% for stop in stops if stop.id == lineStop.stop_id %}
-                <h5 class="card-title">{{ lineStop.order }}. {{ stop.name }}</h5>
+                <h5 class="card-title">{{ stop.name }}</h5>
                 {% set minute = (connection.time.minute+lineStop.time_from_start)%60 %}
                 {% set totalMinutes = connection.time.minute + lineStop.time_from_start %}
                 {% set hour = connection.time.hour + (totalMinutes // 60) %}
