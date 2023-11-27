@@ -26,8 +26,8 @@
                 {% endif %}
             {% endfor %}
         </select><br>
-    
-        
+
+
 
         <h3>Stops</h3>
         <ul>
@@ -36,7 +36,12 @@
             <div>
                 {% for stop in stops if stop.id == lineStop.stop_id %}
                 <h5 class="card-title">{{ lineStop.order }}. {{ stop.name }}</h5>
-                <p id="time_from_start-{{stop.id}}"> {{ datetime.time(connection.time.hour+(lineStop.time_from_start//60), connection.time.minute+(lineStop.time_from_start%60), 0) }}</p>
+                {% set minute = (connection.time.minute+lineStop.time_from_start)%60 %}
+                {% set totalMinutes = connection.time.minute + lineStop.time_from_start %}
+                {% set hour = connection.time.hour + (totalMinutes // 60) %}
+                {% set minute = totalMinutes % 60 %}
+                {% set time = datetime.time(hour, minute, 0) %}
+                <p id="time_from_start-{{stop.id}}"> {{ time }}</p>
                 {% endfor %}
             </div>
             {% endfor %}
@@ -50,7 +55,7 @@
 
 {% block js %}
     <script>
-        
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
             const fields = {
