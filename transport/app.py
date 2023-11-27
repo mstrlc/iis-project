@@ -4,21 +4,24 @@ from flask_wtf.csrf import CSRFProtect
 from flask import Flask, render_template, current_app, Blueprint
 from transport.extensions import db, login_manager
 from transport.views.home import home_bp
-from transport.views.authentication import authentication_bp
-from transport.views.administration import administration_bp
-from transport.views.management import management_bp
-from transport.views.api.authentication import authentication_api_bp
-from transport.views.api.administration import administration_api_bp
-from transport.views.api.management import management_api_bp
+import transport.views.authentication as authentication
+import transport.views.administration as administration
+import transport.views.management as management
+import transport.views.api.authentication as authentication_api
+import transport.views.api.administration as administration_api
+import transport.views.api.management as management_api
 from dotenv import load_dotenv
 from transport.models import User
-from transport.sample_data import insert_sample_roles, insert_sample_users, insert_sample_vehicles, insert_sample_stops, insert_sample_lines
+import transport.sample_data as sd
 
 def create_app():
     app = Flask(__name__)
     load_dotenv()
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
-    app.config["TESTING"] = True
+    # if you changed models, set this to True
+    app.config["MODELS_CHANGED"] = False 
+    # if you want to insert sample data, set this to True
+    app.config["SAMPLE_DATA"] = True
     app.config["SESSION_COOKIE_SECURE"] = False
 
     app.config.from_mapping(
@@ -29,7 +32,8 @@ def create_app():
     db.init_app(app)
     with app.app_context():
 
-        # models_changed(app)
+        if app.config["SAMPLE_DATA"] == "True":
+            models_changed(app)
         db.create_all()
 
         db.session.commit()
@@ -37,14 +41,14 @@ def create_app():
         db.session.remove()
 
     app.register_blueprint(home_bp)
-    app.register_blueprint(authentication_bp)
-    app.register_blueprint(administration_bp)
-    app.register_blueprint(management_bp)
+    app.register_blueprint(authentication.authentication_bp)
+    app.register_blueprint(management.management_bp)
+    app.register_blueprint(administration.administration_bp)
 
     api_bp = Blueprint("api", __name__, url_prefix="/api")
-    api_bp.register_blueprint(authentication_api_bp)
-    api_bp.register_blueprint(administration_api_bp)
-    api_bp.register_blueprint(management_api_bp)
+    api_bp.register_blueprint(authentication_api.authentication_api_bp)
+    api_bp.register_blueprint(administration_api.administration_api_bp)
+    api_bp.register_blueprint(management_api.management_api_bp)
     app.register_blueprint(api_bp)
 
     return app
@@ -52,13 +56,15 @@ def create_app():
 
 def models_changed(app):
     with app.app_context():
-        db.drop_all()
+        if app.config["MODELS_CHANGED"] == "True":
+            db.drop_all()
         db.create_all()
-        insert_sample_lines()
-        insert_sample_stops()
-        insert_sample_vehicles()
-        insert_sample_roles()
-        insert_sample_users()
+        sd.insert_sample_lines()
+        sd.insert_sample_stops()
+        sd.insert_sample_vehicles()
+        sd.insert_sample_roles()
+        sd.insert_sample_users()
+        sd.insert_sample_connections()
 
 
 

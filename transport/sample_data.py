@@ -70,9 +70,26 @@ def insert_sample_stops():
 
 def insert_sample_lines():
     from transport.models import Line
-    lines = [ "1", "2", "3" ]
+    lines = [ "E56", "12", "C" ]
     # for each check if users already exist
     for line in lines:
         if not Line.query.filter_by(name=line).first():
             new_line = Line(name=line)
             new_line.save()
+
+def insert_sample_connections():
+    from transport.models import Connection
+    from transport.models import Line
+    from transport.models import User
+    from transport.models import Vehicle
+    directions = [ "forward", "backward" ]
+    times = [ "12:00", "14:30" ]
+    days_of_week = [ "monday", "tuesday", "wednesday" ]
+    driver_id = User.query.filter_by(email="driver@transport.com").first().id
+    line_id = [ Line.query.filter_by(name="E56").first().id, Line.query.filter_by(name="C").first().id ]
+    vehicle_id = [ Vehicle.query.filter_by(name="Morava Expres").first().id, Vehicle.query.filter_by(name="Špilberk Běžec").first().id ]
+    # for each check if users already exist
+    for i, dir in enumerate(directions):
+        if not Connection.query.filter_by(direction=dir).first():
+            new_connection = Connection(direction=dir, time=times[i], days_of_week=f'{days_of_week[i]}, {days_of_week[i+1]}', line_id=line_id[i], driver_id=driver_id, vehicle_id=vehicle_id[i])
+            new_connection.save()

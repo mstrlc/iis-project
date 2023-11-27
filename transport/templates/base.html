@@ -77,14 +77,15 @@
                             <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
                         </li>
                     {% endif %}
-                    <li>
-                        <p>User {{ current_user.email }}</p>
-                    </li>
-                    <li>
-                        <p id="timeout_clock"></p>
-                    </li>
-
-                    <button id="logout" class="btn btn-outline-secondary" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
+                        <li>
+                            <p class="nav-item">User {{ current_user.email }}</p>
+                        </li>
+                        <li class="nav-item">
+                            <p id="timeout_clock"></p>
+                        </li>
+                        <li>
+                        <button id="logout" class="btn btn-outline-secondary" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
+                        </li>
                     {% else %}
                     <p hidden id="isloggedin">False</p>
                     <li>

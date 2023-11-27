@@ -56,16 +56,55 @@
 
 <h3>Databáze</h3>
 
-Zde vložte grafické schéma relační databáze (tabulek v databázi).
+<img src="iis-project/db/er.png" alt="Databáze" width="700" height="600" />
 
 <h2>Instalace</h2>
 
-Stručně popište:
-<ul>
-<li>postup instalace na server,</li>
-<li>softwarové požadavky (verze PHP apod.),</li>
-<li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
-</ul>
+<h3>Softwarové požadavky</h3>
+Doporučené je používat Python 3. Flask ale podporuje Python 3.5 a novější, Python 2.7, and PyPy.
+
+<h3>Databáze</h3>
+Je třeba mít nainstalovaný <b>MySQL server</b>. Dále vytvořenou databázi s názvem <b>Transport</b>.<br>
+
+<h3>Instalace</h3>
+
+<ol>
+	<li>Zkopírujte .env.example do .myenv
+	</li>
+	<li>V .myenv nahraďte obsah DATABASE_URI vaším připojením k databázi<br>
+		<b><code>DATABASE_URI=mysql+pymysql://root:<your_password>@localhost/transport</code></b><br>
+	</li>
+	<li>Spusťte python virtuální prostředí
+	</li>
+	<li>Vyexportujte proměnné prostředí
+	</li>
+	<li>Aktivujte virtuální prostředí
+	</li>
+	<li>Nainstalujte závislosti
+	</li>
+	<li>Spusťte aplikaci
+	</li>
+</ol>
+
+<ol>
+	<li><code>cp .env.example .myenv</code>
+	</li>
+	<li><code>DATABASE_URI=mysql+pymysql://root:<your_password>@localhost/transport</code>
+	</li>
+	<li><code>virtualenv venv</code>
+	</li>
+	<li><code>set -a</code><br>
+		<code>. .myenv</code><br>
+		<code>set +a</code><br>
+	</li>
+	<li><code>source venv/bin/activate</code><br>
+	</li>
+	<li><code>pip install -r requirements.txt</code>
+	</li>
+	<li><code>flask run --host=0.0.0.0</code>
+	</li>
+</ol>
+
 
 <h2>Známé problémy</h2>
 <p>Zde popište, které body zadání nejsou implementovány a z jakého důvodu. Např. &bdquo;Z časových důvodů nebyla implementována správa uživatelů.&rdquo; Pomůžete tím zrychlit hodnocení, když neimplementované funkce nebudeme muset dlouze hledat.</p>

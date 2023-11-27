@@ -88,7 +88,7 @@ def register():
                 firstname=req.get("firstname"),
                 lastname=req.get("lastname"),
                 password=req.get("password"),
-                role=user_role,
+                roles=[user_role],
             )
             user.save()
             res = {
