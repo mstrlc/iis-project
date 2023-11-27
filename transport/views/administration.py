@@ -39,7 +39,7 @@ def add_user():
 def edit_user(user_id):
     user = User.query.get(user_id)
     roles = Role.query.all()
-    user_form = UserForm(obj=user)
+    user_form = UserEditForm(obj=user)
     if request.method == "POST":
         if user_form.validate():
             res = {
@@ -57,3 +57,9 @@ class UserForm(FlaskForm):
     lastname = StringField("Last Name", validators=[DataRequired()])
     email = EmailField("Email Address", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
+
+class UserEditForm(FlaskForm):
+    id = IntegerField("ID", render_kw={'readonly': True})
+    firstname = StringField("First Name", validators=[DataRequired()])
+    lastname = StringField("Last Name", validators=[DataRequired()])
+    email = EmailField("Email Address", validators=[DataRequired(), Email()])

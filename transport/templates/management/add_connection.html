@@ -11,7 +11,10 @@
         <label for="time">Time</label><br>
         {{ form.time(class_="form-control")  }} <br>
         <label for="direction">Direction</label><br>
-        {{ form.direction(class_="form-control")  }} <br>
+        <select id="direction">
+            <option value="forward">Forward</option>
+            <option value="backward">Backward</option>
+        </select><br>
         <label for="days_of_week">Days_of_week</label><br>
         {{ form.days_of_week(class_="form-control")  }} <br>
         <label for="line_id">Line</label><br>
