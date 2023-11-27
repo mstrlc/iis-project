@@ -12,13 +12,8 @@
         <input type="hidden" id="id" value="{{ connection.id }}">
         <label for="time">Time</label><br>
         {{ form.time(class_="form-control")  }} <br>
-        <label for="direction">Direction</label><br>
-        <select id="direction">
-            <option value="forward" {% if connection.direction == "forward" %} selected {% endif %}>Forward</option>
-            <option value="backward" {% if connection.direction == "backward" %} selected {% endif %}>Backward</option>
-        </select><br>
-        <label for="days_of_week">Days_of_week</label><br>
-        {{ form.days_of_week(class_="form-control")  }} <br>
+        <input type="hidden" id="direction" value="{{ connection.direction }}">
+        <input type="hidden" id="days_of_week" value="{{ connection.days_of_week }}">
         <input type="hidden" id="line_id" value="{{ connection.line_id }}">
         <label for="vehicle_id">Vehicle</label><br>
         <select name="vehicle_id" id="vehicle_id">
