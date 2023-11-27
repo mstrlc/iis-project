@@ -14,8 +14,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                
                 {% if current_user.is_authenticated %}
+                    <p hidden id="isloggedin">True</p>
                     {% if current_user.roles[0].name == "admin" %}
                         <li>
                             <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
@@ -36,7 +36,7 @@
                             <a class="nav-link" href="{{ url_for('management.maintenance') }}">Maintenance</a>
                         </li>
                     {% endif %}
-                    
+
                     {% if current_user.roles[0].name=="manager"  %}
                         <li>
                             <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
@@ -69,13 +69,20 @@
                             <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
                         </li>
                     {% endif %}
-                    <p>User {{ current_user.email }} </p>
+                    <li>
+                        <p>User {{ current_user.email }} </p>
+                        <p id="timeout_clock"></p>
+                    </li>
+
                     <button id="logout" class="btn btn-outline-secondary" href="{{ url_for('api.authentication_api.logout') }}">Logout</button>
-                {% else %}
+                    {% else %}
+                    <p hidden id="isloggedin">False</p>
                     <li>
                         <a class="nav-link" href="{{ url_for('management.connections') }}">Connections</a>
                     </li>
-                    <p>Not logged in</p>
+                    <li>
+                        <p class="nav-item">Not logged in</p>
+                    </li>
                     <a href="{{ url_for('authentication.login') }}" class="btn btn-outline-secondary">Login</a>
                     <a href="{{ url_for('authentication.register') }}" class="btn btn-outline-secondary">Register</a>
                 {% endif %}
@@ -111,6 +118,52 @@
                 alert(json.message);
             }
         });
+    </script>
+{% endblock %}
+
+{% block timeout %}
+    <script>
+        const loggedin = document.getElementById("isloggedin");
+        const timeout_clock = document.getElementById("timeout_clock");
+        var seconds_left = 600;
+
+        if(loggedin.innerText == "True") {
+            function updateTimer() {
+                timer_left = seconds_left--;
+                if(timer_left == 0) {
+                    timeout();
+                }
+                var minutes = Math.floor(timer_left / 60);
+                var seconds = timer_left % 60;
+                if(seconds < 10) {
+                    seconds = "0" + seconds;
+                }
+                timeout_clock.innerText = "Timeout in " + minutes + ":" + seconds + " sec";
+            }
+            setInterval(updateTimer, 1000);
+            }
+        else {
+            clearInterval(updateTimer);
+        }
+
+        async function timeout() {
+            alert("Session timed out");
+            const response = await fetch("{{ url_for('api.authentication_api.logout') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: {}
+            });
+            if(response.ok) {3
+                const json = await response.json();
+                window.location.href = "{{ url_for('home.index') }}";
+            } else {
+                const json = await response.json();
+                alert(json.message);
+            }
+            clearInterval(timer);
+        };
     </script>
 {% endblock %}
 
