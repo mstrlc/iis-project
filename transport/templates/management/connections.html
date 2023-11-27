@@ -5,22 +5,38 @@
 {% endblock %}
 
 {% block content %}
-    {% if current_user.roles[0].name in ['manager','admin']  %}
-        <a href="{{ url_for('management.add_connection') }}" class="btn btn-outline-secondary">Add</a>
-    {% endif %}
-    {% for connection in connections if connection.deleted != 1 %}
-        <div class="card">
-            <div class="card-body">
-                <div class="group align-right">
-                    <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
-                    <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}, Vehicle: {{ connection.vehicle_id }}</h6>
-                    {% if current_user.roles[0].name in ['dispatcher','manager','admin']  %}
-                        <a href="{{ url_for('management.edit_connection', connection_id=connection.id) }}" class="btn btn-outline-secondary">Edit</a>
-                    {% endif %}
+    {% if current_user.is_authenticated %}
+        {% if current_user.roles[0].name in ['manager','admin']  %}
+            <a href="{{ url_for('management.add_connection') }}" class="btn btn-outline-secondary">Add</a>
+        {% endif %}
+        {% for connection in connections if connection.deleted != 1 %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="group align-right">
+                        <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
+                        <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}, Vehicle: {{ connection.vehicle_id }}</h6>
+                        {% if current_user.roles[0].name in ['dispatcher','manager','admin']  %}
+                            <a href="{{ url_for('management.edit_connection', connection_id=connection.id) }}" class="btn btn-outline-secondary">Edit</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-        <br>
+            <br>
         {% endfor %}
+    {% else %}
+    {% for connection in connections if connection.deleted != 1 %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="group align-right">
+                        <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
+                        <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}, Vehicle: {{ connection.vehicle_id }}</h6>
+                    </div>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+        
+    {% endif %}
 {% endblock %}

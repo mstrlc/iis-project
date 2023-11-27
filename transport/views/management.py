@@ -136,8 +136,6 @@ def edit_vehicle(vehicle_id):
     return render_template("management/edit_vehicle.html", form=vehicle_form, id=vehicle.id, vehicle=vehicle)
 
 @management_bp.route("/connections", methods=["GET", "POST"])
-@login_required
-@roles_required(['driver', 'dispatcher', 'manager', 'admin'])
 def connections():
     connections = Connection.query.all()
     vehicles = Vehicle.query.all()
