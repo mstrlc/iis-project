@@ -20,8 +20,8 @@
         <label for="vehicle_id">Vehicle</label><br>
         <select name="vehicle_id" id="vehicle_id">
             {% for vehicle in vehicles %}
-                {% if vehicle == for_vehicle %}
-                <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
+            {% if connection.vehicle_id == vehicle.id %}
+            <option value="{{ vehicle.id }}" selected>{{ vehicle.name }}</option>
                 {% else %}
                 <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
                 {% endif %}

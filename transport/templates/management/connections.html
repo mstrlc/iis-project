@@ -10,6 +10,7 @@
             <a href="{{ url_for('management.add_connection') }}" class="btn btn-outline-secondary">Add</a>
         {% endif %}
         {% for connection in connections %}
+            {% if (current_user.roles[0].name == "driver" and connection.driver_id == current_user.id) or (current_user.roles[0].name != "driver") %}
             <div class="card">
                 <div class="card-body">
                     <div class="group align-right">
@@ -23,15 +24,17 @@
                 </div>
             </div>
             <br>
+            {% endif %}
         {% endfor %}
     {% else %}
+    <!-- guest -->
     {% for connection in connections %}
             <div class="card">
                 <div class="card-body">
                     <div class="group align-right">
                         <h6 class="card-subtitle mb-2 text-muted">#{{ connection.id }}</h6>
                         <h5 class="card-title">Line: {{ connection.line_id }}, {{ connection.time }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}, Vehicle: {{ connection.vehicle_id }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ connection.days_of_week }}, {{ connection.direction }}</h6>
                     </div>
                 </div>
             </div>
