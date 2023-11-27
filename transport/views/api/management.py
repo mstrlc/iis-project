@@ -6,12 +6,15 @@ from flask import jsonify
 from flask import make_response
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import current_app
+from transport.views import roles_required
 from transport.extensions import db
 from transport.models import Stop, Vehicle, Line, LinesStops, Connection, Maintenance
 
 management_api_bp = Blueprint("management_api", __name__)
 
 @management_api_bp.route("/add_stop", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def add_stop():
     req = request.get_json()
     with current_app.app_context():
@@ -30,6 +33,8 @@ def add_stop():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/edit_stop", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def edit_stop():
     req = request.get_json()
     with current_app.app_context():
@@ -48,6 +53,8 @@ def edit_stop():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/remove_stop", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def remove_stop():
     req = request.get_json()
     with current_app.app_context():
@@ -60,6 +67,8 @@ def remove_stop():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/add_line", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def add_line():
     req = request.get_json()
     with current_app.app_context():
@@ -74,6 +83,8 @@ def add_line():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/edit_line", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def edit_line():
     req = request.get_json()
     with current_app.app_context():
@@ -88,6 +99,8 @@ def edit_line():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/remove_line", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def remove_line():
     req = request.get_json()
     with current_app.app_context():
@@ -100,6 +113,8 @@ def remove_line():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/add_stop_to_line", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def add_stop_to_line():
     req = request.get_json()
     with current_app.app_context():
@@ -121,6 +136,8 @@ def add_stop_to_line():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/remove_stop_from_line", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def remove_stop_from_line():
     req = request.get_json()
     with current_app.app_context():
@@ -138,6 +155,8 @@ def remove_stop_from_line():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/move_stop_in_line", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def move_stop_in_line():
     req = request.get_json()
     with current_app.app_context():
@@ -163,6 +182,8 @@ def move_stop_in_line():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/update_time_from_start", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def update_time_from_start():
     req = request.get_json()
     with current_app.app_context():
@@ -176,6 +197,8 @@ def update_time_from_start():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/add_vehicle", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def add_vehicle():
     req = request.get_json()
     with current_app.app_context():
@@ -200,6 +223,8 @@ def add_vehicle():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/edit_vehicle", methods=["POST"])
+@login_required
+@roles_required(['driver','manager','admin'])
 def edit_vehicle():
     req = request.get_json()
     with current_app.app_context():
@@ -224,6 +249,8 @@ def edit_vehicle():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/remove_vehicle", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def remove_vehicle():
     req = request.get_json()
     with current_app.app_context():
@@ -236,6 +263,8 @@ def remove_vehicle():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/add_connection", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def add_connection():
     req = request.get_json()
     with current_app.app_context():
@@ -258,6 +287,8 @@ def add_connection():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/edit_connection", methods=["POST"])
+@login_required
+@roles_required(['dispatcher','admin'])
 def edit_connection():
     req = request.get_json()
     with current_app.app_context():
@@ -280,6 +311,8 @@ def edit_connection():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/remove_connection", methods=["POST"])
+@login_required
+@roles_required(['manager','admin'])
 def remove_connection():
     req = request.get_json()
     with current_app.app_context():
@@ -293,6 +326,8 @@ def remove_connection():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/add_maintenance", methods=["POST"])
+@login_required
+@roles_required(['technician','admin'])
 def add_maintenance():
     req = request.get_json()
     with current_app.app_context():
@@ -314,6 +349,8 @@ def add_maintenance():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/edit_maintenance", methods=["POST"])
+@login_required
+@roles_required(['technician','admin'])
 def edit_maintenance():
     req = request.get_json()
     with current_app.app_context():
@@ -332,6 +369,8 @@ def edit_maintenance():
         return make_response(jsonify(res), 200)
 
 @management_api_bp.route("/remove_maintenance", methods=["POST"])
+@login_required
+@roles_required(['technician','admin'])
 def remove_maintenance():
     req = request.get_json()
     with current_app.app_context():
